@@ -1,0 +1,241 @@
+---
+import { Image } from "astro:assets";
+import logo from "../../assets/images/logo-paulo-bernardo.svg";
+import WhatsAppIcon from "../global/WhatsAppIcon.astro";
+
+const WA_NUMBER = import.meta.env.PUBLIC_WA_NUMBER || "";
+const WA_MESSAGE =
+  import.meta.env.PUBLIC_WA_MESSAGE ||
+  "Olá! Vi o site e gostaria de saber mais sobre o adestramento.";
+const WA_LINK = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MESSAGE)}`;
+
+const navItems = [
+  { label: "Serviços", href: "#servicos" },
+  { label: "Diferenciais", href: "#diferenciais" },
+  { label: "Sobre", href: "#sobre" },
+  { label: "Avaliações", href: "#avaliacoes" },
+  { label: "F.A.Q", href: "#faq" },
+];
+---
+
+<header
+  id="site-header"
+  class="fixed inset-x-0 top-0 z-50 border-b border-white/20 bg-surface-alt/70 shadow-[0_0_10px_rgba(0,0,0,0.05)] backdrop-blur-[3px]"
+>
+  <div class="container-wide">
+    <div class="flex items-center justify-between gap-4 py-[15px]">
+      <a
+        href="#hero-section"
+        class="relative flex items-center"
+        aria-label="Cão Belo Adestramento — Paulo Bernardo, ir para o início"
+      >
+        <Image
+          src={logo}
+          alt="Cão Belo Adestramento"
+          class="h-[85px] w-[85px] sm:h-[104px] sm:w-[104px]"
+          width={104}
+          height={104}
+        />
+      </a>
+
+      <!-- O container da nav tem padding lateral de 10px no Figma, além do
+           padding de 15px de cada item. -->
+      <nav class="hidden items-center px-[10px] lg:flex" aria-label="Navegação principal">
+        {navItems.map((item) => (
+          <a
+            href={item.href}
+            data-nav-link
+            class="nav-link px-[15px] py-[13px] font-sans text-[0.97rem] leading-[20px] text-primary"
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+
+      <button
+        id="mobile-menu-btn"
+        aria-label="Abrir menu"
+        aria-expanded="false"
+        class="flex h-11 w-11 items-center justify-center rounded-[5px] bg-black/5 text-text-main lg:hidden"
+      >
+        <svg id="menu-icon" class="h-[22px] w-[22px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"></path>
+        </svg>
+        <svg id="close-icon" class="hidden h-[22px] w-[22px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="hidden border-t border-white/20 bg-surface-alt/95 backdrop-blur-sm lg:hidden">
+    <nav class="container-wide flex flex-col gap-1 py-4" aria-label="Menu móvel">
+      {navItems.map((item) => (
+        <a
+          href={item.href}
+          class="mobile-nav-link rounded-md px-3 py-3 font-sans text-base text-primary"
+        >
+          {item.label}
+        </a>
+      ))}
+      <a
+        href={WA_LINK}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-primary-mobile mt-2"
+        data-tracking="whatsapp-header-mobile"
+        data-section="header-mobile"
+      >
+        <WhatsAppIcon class="h-5 w-5 shrink-0" />
+        <span class="whitespace-nowrap">Fale agora pelo WhatsApp!</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- Espaçador com a altura exata do header fixo (padding 15px + logo + borda). -->
+<div class="h-[116px] sm:h-[135px]" aria-hidden="true"></div>
+
+<style>
+  /* Deslize do header ao esconder/aparecer. A curva desacelera no fim
+     (ease-out) para o movimento não terminar em corte seco; 420ms dá tempo
+     de o olho acompanhar sem atrasar a leitura.
+
+     translateZ(0) fixo isola o header numa camada de composição própria:
+     assim o backdrop-blur é recalculado só na área do header, não força
+     repaint da página no scroll, e a translação da transição roda na GPU.
+     (will-change fixo faria o mesmo, mas é desaconselhado deixar permanente.) */
+  #site-header {
+    transform: translateZ(0);
+    transition: transform 0.42s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #site-header {
+      transition: none;
+    }
+  }
+
+  .nav-link:hover,
+  .nav-link.nav-active {
+    color: var(--t-primary);
+  }
+  .nav-link.nav-active {
+    text-decoration: underline;
+    text-decoration-color: var(--t-secondary);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 6px;
+  }
+  .mobile-nav-link:hover {
+    background: color-mix(in srgb, var(--t-secondary) 18%, transparent);
+    color: var(--t-primary);
+  }
+</style>
+
+<script>
+  const btn = document.getElementById("mobile-menu-btn");
+  const menu = document.getElementById("mobile-menu");
+  const menuIcon = document.getElementById("menu-icon");
+  const closeIcon = document.getElementById("close-icon");
+
+  function setMenu(open: boolean) {
+    menu?.classList.toggle("hidden", !open);
+    btn?.setAttribute("aria-expanded", String(open));
+    btn?.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
+    menuIcon?.classList.toggle("hidden", open);
+    closeIcon?.classList.toggle("hidden", !open);
+  }
+
+  btn?.addEventListener("click", () => {
+    setMenu(menu?.classList.contains("hidden") ?? false);
+  });
+
+  document.querySelectorAll(".mobile-nav-link").forEach((link) => {
+    link.addEventListener("click", () => setMenu(false));
+  });
+
+  document.addEventListener("click", (e) => {
+    const header = document.getElementById("site-header");
+    if (header && !header.contains(e.target as Node)) setMenu(false);
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") setMenu(false);
+  });
+
+  // Esconde ao rolar para baixo, reaparece ao rolar para cima.
+  //
+  // O scroll suave do Lenis dispara dezenas de eventos por segundo. O trabalho
+  // é jogado num requestAnimationFrame (no máx. uma vez por frame) e só mexe
+  // no transform quando o estado muda de fato — sem isso, cada micro-oscilação
+  // reescrevia o transform e reiniciava a transição, e o header piscava.
+  const header = document.getElementById("site-header");
+  const DELTA_MIN = 8; // px de movimento para valer como mudança de direção
+  const Y_MINIMO = 120; // só esconde depois de sair do topo
+  // translateZ(0) preservado sempre (mantém a camada de composição do CSS).
+  const VISIVEL = "translateY(0) translateZ(0)";
+  const OCULTO = "translateY(-100%) translateZ(0)";
+  let lastY = window.scrollY;
+  let escondido = false;
+  let agendado = false;
+
+  function atualizarHeader() {
+    agendado = false;
+    if (!header) return;
+
+    const y = window.scrollY;
+    const delta = y - lastY;
+    lastY = y;
+    if (Math.abs(delta) < DELTA_MIN) return;
+
+    const menuOpen = menu && !menu.classList.contains("hidden");
+    const querEsconder = delta > 0 && y > Y_MINIMO && !menuOpen;
+
+    // Só toca no style quando o estado realmente muda.
+    if (querEsconder !== escondido) {
+      escondido = querEsconder;
+      header.style.transform = escondido ? OCULTO : VISIVEL;
+    }
+  }
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (agendado) return;
+      agendado = true;
+      requestAnimationFrame(atualizarHeader);
+    },
+    { passive: true },
+  );
+
+  // Link ativo conforme a seção visível.
+  const navLinks = Array.from(
+    document.querySelectorAll("[data-nav-link]"),
+  ) as HTMLAnchorElement[];
+  const sections = navLinks
+    .map((link) => document.querySelector(link.getAttribute("href") || ""))
+    .filter((el): el is Element => el !== null);
+  // O hero também é observado: quando ele está na faixa, nenhum item de menu
+  // fica ativo (senão "Serviços" gruda ao voltar ao topo).
+  const hero = document.getElementById("hero-section");
+
+  function marcarAtivo(id: string | null) {
+    navLinks.forEach((link) => {
+      link.classList.toggle("nav-active", id !== null && link.getAttribute("href") === `#${id}`);
+    });
+  }
+
+  if (sections.length) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          marcarAtivo(entry.target === hero ? null : entry.target.id);
+        });
+      },
+      { rootMargin: "-42% 0px -48% 0px" },
+    );
+    sections.forEach((section) => observer.observe(section));
+    if (hero) observer.observe(hero);
+  }
+</script>

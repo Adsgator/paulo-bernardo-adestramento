@@ -1,0 +1,192 @@
+---
+// BaseLayout.astro — wrapper de todas as páginas do projeto.
+//
+// Header e Footer NÃO estão aqui. São compostos na página (index.astro):
+// <BaseLayout> → <Header /> + <main id="main-content"> + <Footer />.
+//
+// Inclui: anti-flash dark mode, GTM, Consent Mode v2, SEO/OG, fontes,
+// SkipLink, WhatsAppFloat, CookieBanner, ScrollAnimations.
+
+import GTM from "../components/global/GTM.astro";
+import SkipLink from "../components/global/SkipLink.astro";
+import WhatsAppFloat from "../components/global/WhatsAppFloat.astro";
+import CookieBanner from "../components/islands/CookieBanner.tsx";
+import ScrollAnimations from "../components/islands/ScrollAnimations.tsx";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  keywords?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  canonical?: string;
+  noindex?: boolean;
+  schema?: object;
+}
+
+const SITE_URL = import.meta.env.PUBLIC_SITE_URL || "https://paulobernardoadestrador.com.br";
+const WA_NUMBER = import.meta.env.PUBLIC_WA_NUMBER || "";
+
+const {
+  title = import.meta.env.PUBLIC_SEO_TITLE ||
+    "Paulo Bernardo | Adestrador de Cães em São José dos Campos",
+  description = import.meta.env.PUBLIC_SEO_DESCRIPTION ||
+    "Adestramento e passeios para cães em São José dos Campos e região. Mais de 15 anos de experiência com métodos positivos. Fale pelo WhatsApp.",
+  keywords = import.meta.env.PUBLIC_SEO_KEYWORDS ||
+    "adestrador de cães são josé dos campos, adestramento canino, passeio de cães, comportamento canino",
+  ogTitle = title,
+  ogDescription = description,
+  canonical = SITE_URL,
+  noindex = false,
+  schema,
+} = Astro.props;
+
+// ID do GTM do cliente (vazio = não injeta).
+const GTM_ID = import.meta.env.PUBLIC_GTM_ID || "";
+
+// Tema inicial do site.
+const DEFAULT_THEME = "light";
+
+// Schema.org — Cão Belo Adestramento / Paulo Bernardo (serviço local).
+const defaultSchema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: "Cão Belo Adestramento — Paulo Bernardo",
+  description:
+    "Adestramento, passeios educativos e recreativos, palestras e cursos para adestradores. Atendimento em domicílio com métodos positivos.",
+  url: SITE_URL,
+  ...(WA_NUMBER ? { telephone: `+${WA_NUMBER}` } : {}),
+  areaServed: "São José dos Campos e região",
+  priceRange: "$$",
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "06:00",
+      closes: "21:00",
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: "Saturday",
+      opens: "09:00",
+      closes: "12:00",
+    },
+  ],
+  sameAs: ["https://www.instagram.com/paulobernardoadestrador"],
+};
+
+const finalSchema = schema || defaultSchema;
+const ogImage = `${SITE_URL}/og-image.png`;
+---
+
+<!DOCTYPE html>
+<html lang="pt-BR" data-default-theme={DEFAULT_THEME}>
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- Dark mode — executa ANTES do CSS para evitar flash.
+       Respeita escolha salva; senão usa data-default-theme; senão prefers-color-scheme. -->
+  <script is:inline>
+    (function () {
+      var stored = localStorage.getItem('theme');
+      var t = stored
+        || document.documentElement.dataset.defaultTheme
+        || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      if (t === 'dark') document.documentElement.classList.add('dark');
+    })();
+  </script>
+
+  {GTM_ID && <GTM id={GTM_ID} />}
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta name="theme-color" content="#ffd400" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#141414" media="(prefers-color-scheme: dark)" />
+
+  <!-- SEO -->
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="keywords" content={keywords} />
+  {noindex && <meta name="robots" content="noindex, follow" />}
+  <link rel="canonical" href={canonical} />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Cão Belo Adestramento" />
+  <meta property="og:title" content={ogTitle} />
+  <meta property="og:description" content={ogDescription} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <!-- Dimensões declaradas: sem elas o WhatsApp e alguns validadores não
+       garantem a prévia grande no primeiro compartilhamento. -->
+  <meta property="og:image:width" content="800" />
+  <meta property="og:image:height" content="450" />
+  <meta property="og:image:alt" content="Cão Belo Adestramento — Paulo Bernardo, adestrador de cães" />
+  <meta property="og:locale" content="pt_BR" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={ogTitle} />
+  <meta name="twitter:description" content={ogDescription} />
+  <meta name="twitter:image" content={ogImage} />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- Fontes (Barlow Condensed + Nunito) são self-hosted via @fontsource
+       no global.css — sem <link> externo para o Google Fonts. -->
+
+  <!-- Schema.org JSON-LD -->
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(finalSchema)} />
+
+  <!-- Google Consent Mode v2 — antes do GTM.
+       O default lê a escolha salva pelo CookieBanner: quem já aceitou volta com
+       consentimento concedido desde o primeiro hit (o update tardio do banner,
+       pós-hidratação, deixaria o page_view inicial sempre sem cookies). -->
+  <script is:inline>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    var consentimentoSalvo = null;
+    try { consentimentoSalvo = localStorage.getItem('cookie-consent'); } catch (e) {}
+    var statusConsentimento = consentimentoSalvo === 'accepted' ? 'granted' : 'denied';
+    gtag('consent', 'default', {
+      'ad_storage': statusConsentimento,
+      'analytics_storage': statusConsentimento,
+      'ad_user_data': statusConsentimento,
+      'ad_personalization': statusConsentimento,
+      'wait_for_update': 500
+    });
+  </script>
+</head>
+<body>
+  {GTM_ID && (
+    <noscript>
+      <iframe
+        src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"
+      ></iframe>
+    </noscript>
+  )}
+
+  <SkipLink />
+
+  <!--
+    Header, <main id="main-content"> e Footer são compostos em index.astro:
+      <BaseLayout>
+        <Header />
+        <main id="main-content"> ...seções... </main>
+        <Footer />
+      </BaseLayout>
+  -->
+  <slot />
+
+  <WhatsAppFloat />
+
+  <CookieBanner client:idle />
+
+  <ScrollAnimations client:load />
+</body>
+</html>

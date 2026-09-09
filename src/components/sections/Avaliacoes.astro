@@ -1,0 +1,304 @@
+---
+import { Image } from "astro:assets";
+import avatarBruna from "../../assets/images/aval-bruna.png";
+import avatarEzequiel from "../../assets/images/aval-ezequiel.png";
+import avatarJessica from "../../assets/images/aval-jessica.png";
+import avatarRonaldo from "../../assets/images/aval-ronaldo.png";
+import avatarSilara from "../../assets/images/aval-silara.png";
+
+// Depoimentos reais dos tutores (Google). Textos verbatim — os 3 primeiros
+// aparecem truncados ("…") como no Google.
+const depoimentos = [
+  {
+    nome: "Bruna Froes",
+    avatar: avatarBruna,
+    texto:
+      "O Paulo é um excelente profissional. Achei seu contato pelo google e fiquei animada com os comentários. E, de fato, o trabalho atendeu e muito minhas expectativas. Tenho um spitz alemão de 10 kg (enorme), que embora dócil, tinha bastante ansiedade de separação…",
+  },
+  {
+    nome: "Jéssica Duque",
+    avatar: avatarJessica,
+    texto:
+      "O trabalho do Paulo é de excelência. Ele compreendeu o que tínhamos mais urgência quando iniciamos o adestramento, nos ensinou todo o processo, ajudando nas dificuldades que fomos tendo conforme apareciam…",
+  },
+  {
+    nome: "Silara Batista",
+    avatar: avatarSilara,
+    texto:
+      "O Paulo é um ótimo adestrador. Muito atencioso, prestativo e compreensivo desde o primeiro contato, até as remarcações que foram necessárias durante o adestramento. O Spike adora ele e melhorou 100% seu comportamento reativo e ansioso durante os passeios…",
+  },
+  {
+    nome: "Ronaldo H. Francisco",
+    avatar: avatarRonaldo,
+    texto:
+      "Paulo é um profissional excelente. Muito cuidadoso, cordial, organizado e pontual. Recomendo fortemente!",
+  },
+  {
+    nome: "Ezequiel Bernardes",
+    avatar: avatarEzequiel,
+    texto:
+      "Paulo é um ótimo profissional, dedicado, entrega o que promete e ama o que faz. Recomendo seus serviços.",
+  },
+];
+---
+
+<section id="avaliacoes" class="bg-background pb-16 pt-12 md:pb-[120px] md:pt-[119px]">
+  <div class="container-wide">
+    <div class="text-center">
+      <span
+        class="block font-sans text-[19.2px] font-medium leading-[19.2px] tracking-[0.0667em] text-text-muted"
+        data-animate
+      >
+        Avaliações
+      </span>
+      <h2
+        class="mt-[10px] pb-10 font-serif text-[32px] font-extrabold uppercase leading-[1.05] tracking-[0.0083em] text-text-main md:text-[38.4px] md:leading-[38.4px]"
+        data-animate
+      >
+        O que dizem os tutores
+      </h2>
+    </div>
+
+    <div class="relative" data-animate>
+      <button
+        type="button"
+        id="aval-prev"
+        aria-label="Avaliação anterior"
+        aria-controls="aval-track"
+        class="absolute -left-2 top-1/2 z-10 hidden -translate-y-1/2 text-text-muted transition-colors hover:text-text-main sm:block lg:-left-8"
+      >
+        <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        id="aval-next"
+        aria-label="Próxima avaliação"
+        aria-controls="aval-track"
+        class="absolute -right-2 top-1/2 z-10 hidden -translate-y-1/2 text-text-muted transition-colors hover:text-text-main sm:block lg:-right-8"
+      >
+        <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6" />
+        </svg>
+      </button>
+
+      <!-- O padding vertical dá espaço para a sombra de 10px dos cards, que
+           senão fica cortada pelo overflow do trilho.
+           Sem scroll-snap nem scroll-smooth no CSS: o arrasto precisa de
+           movimento livre e o loop infinito faz saltos instantâneos. O
+           deslocamento suave dos botões é feito no script. -->
+      <ul
+        id="aval-track"
+        class="flex cursor-grab gap-[30px] overflow-x-auto py-[15px] outline-none [scrollbar-width:none] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text-muted [&::-webkit-scrollbar]:hidden"
+        tabindex="0"
+        aria-label="Avaliações de tutores"
+      >
+        {depoimentos.map((d) => (
+          <li
+            class="relative flex h-[370px] w-[300px] shrink-0 select-none flex-col rounded-[20px] border border-[#e7e7e7] bg-background px-[41px] pt-[39px] shadow-[10px_10px_10px_rgba(0,0,0,0.2)] md:w-[399px]"
+          >
+            <svg
+              class="absolute right-[41px] top-[11px] h-[38px] w-[38px]"
+              viewBox="0 0 24 24"
+              role="img"
+              aria-label="Avaliação publicada no Google"
+            >
+              <path fill="#4285F4" d="M22.5 12.2c0-.7-.1-1.4-.2-2H12v3.9h5.9a5 5 0 01-2.2 3.3v2.7h3.6c2.1-1.9 3.2-4.8 3.2-7.9z"/>
+              <path fill="#34A853" d="M12 23c2.9 0 5.4-1 7.2-2.6l-3.6-2.7c-1 .7-2.3 1.1-3.6 1.1-2.8 0-5.1-1.9-6-4.4H2.3v2.8A11 11 0 0012 23z"/>
+              <path fill="#FBBC05" d="M6 14.4a6.6 6.6 0 010-4.2V7.4H2.3a11 11 0 000 9.8L6 14.4z"/>
+              <path fill="#EA4335" d="M12 5.5c1.6 0 3 .5 4.1 1.6l3.1-3.1A11 11 0 0012 1a11 11 0 00-9.7 6l3.7 2.8c.9-2.5 3.2-4.3 6-4.3z"/>
+            </svg>
+
+            <Image
+              src={d.avatar}
+              alt=""
+              aria-hidden="true"
+              class="h-[60px] w-[60px] rounded-full object-cover"
+              width={90}
+              height={90}
+            />
+
+            <p class="mt-[19px] font-sans text-[19.2px] font-medium leading-[19.2px] text-text-main">
+              {d.nome}
+            </p>
+
+            <div class="mt-[21px] flex items-center gap-[5px] text-star" aria-label="5 de 5 estrelas">
+              {Array.from({ length: 5 }).map(() => (
+                <svg class="h-[15px] w-[15px]" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 15l-5.2 2.6 1-5.8L1.5 7.7l5.9-.9L10 1.5z" />
+                </svg>
+              ))}
+            </div>
+
+            <!-- O card tem altura fixa de 370px como no design. O line-clamp
+                 corta no fim de uma linha inteira e acrescenta reticências,
+                 em vez de cortar o texto no meio de uma frase. -->
+            <blockquote class="mt-[12px] line-clamp-[7] font-sans text-[14.4px] leading-[21.6px] text-text-soft">
+              {d.texto}
+            </blockquote>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script>
+  const track = document.getElementById("aval-track");
+  const prev = document.getElementById("aval-prev");
+  const next = document.getElementById("aval-next");
+
+  if (track && prev && next) {
+    const originais = Array.from(track.children) as HTMLElement[];
+
+    // ── Loop infinito ──────────────────────────────────────
+    // Duplica a lista antes e depois dos cards reais. O scroll começa no
+    // bloco do meio; sempre que passa de um bloco, volta o equivalente a uma
+    // largura de bloco — como o conteúdo é idêntico, o salto é invisível.
+    // Os clones são escondidos de leitores de tela para não repetir o texto.
+    for (const clone of originais.map((li) => li.cloneNode(true) as HTMLElement)) {
+      clone.setAttribute("aria-hidden", "true");
+      clone.dataset.clone = "";
+      track.append(clone);
+    }
+    for (const clone of originais.map((li) => li.cloneNode(true) as HTMLElement).reverse()) {
+      clone.setAttribute("aria-hidden", "true");
+      clone.dataset.clone = "";
+      track.prepend(clone);
+    }
+
+    const passo = () => {
+      const primeiro = track.querySelector<HTMLElement>("li");
+      if (!primeiro) return track.clientWidth;
+      const gap = Number.parseFloat(getComputedStyle(track).columnGap) || 0;
+      return primeiro.offsetWidth + gap;
+    };
+    const bloco = () => passo() * originais.length;
+
+    // Volta ao bloco do meio quando o scroll sai dele.
+    function normalizar() {
+      const b = bloco();
+      if (track!.scrollLeft < b * 0.5) track!.scrollLeft += b;
+      else if (track!.scrollLeft >= b * 1.5) track!.scrollLeft -= b;
+    }
+
+    // Começa no primeiro card real (fim do bloco de clones da esquerda).
+    function irParaOInicio() {
+      track!.scrollLeft = bloco();
+    }
+    irParaOInicio();
+    window.addEventListener("resize", irParaOInicio, { passive: true });
+
+    // ── Deslocamento suave dos botões e do teclado ─────────
+    // Animação própria em vez de scroll-behavior: smooth, porque o loop
+    // precisa reposicionar o scroll no meio do caminho sem que o navegador
+    // cancele ou brigue com a animação nativa.
+    let animacao = 0;
+    function deslizar(distancia: number) {
+      cancelAnimationFrame(animacao);
+      const inicio = track!.scrollLeft;
+      const t0 = performance.now();
+      const duracao = 420;
+      const passoAnim = (agora: number) => {
+        const t = Math.min((agora - t0) / duracao, 1);
+        // easeOutCubic
+        track!.scrollLeft = inicio + distancia * (1 - (1 - t) ** 3);
+        if (t < 1) animacao = requestAnimationFrame(passoAnim);
+        else normalizar();
+      };
+      animacao = requestAnimationFrame(passoAnim);
+    }
+
+    prev.addEventListener("click", () => deslizar(-passo()));
+    next.addEventListener("click", () => deslizar(passo()));
+
+    track.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        deslizar(passo());
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        deslizar(-passo());
+      }
+    });
+
+    // ── Arrastar com o mouse ───────────────────────────────
+    // Abaixo deste deslocamento o gesto ainda conta como clique, não arrasto.
+    const LIMIAR_ARRASTO = 5;
+    let arrastando = false;
+    let xInicial = 0;
+    let scrollInicial = 0;
+    let moveu = 0;
+
+    // Zera a distância no início de qualquer gesto, inclusive os que não
+    // arrastam: senão um clique parado herdaria o "moveu" do arrasto anterior
+    // e seria bloqueado pelo guard de clique abaixo.
+    track.addEventListener("pointerdown", (e) => {
+      moveu = 0;
+      // Só botão principal do mouse; toque e caneta usam o scroll nativo.
+      if (e.pointerType === "touch" || e.button !== 0) return;
+      arrastando = true;
+      xInicial = e.clientX;
+      scrollInicial = track.scrollLeft;
+      cancelAnimationFrame(animacao);
+    });
+
+    track.addEventListener("pointermove", (e) => {
+      if (!arrastando) return;
+      const delta = e.clientX - xInicial;
+      moveu = Math.max(moveu, Math.abs(delta));
+      // preventDefault só depois de um arrasto real: o navegador emite um
+      // pointermove mesmo num clique parado, e preveni-lo ali suprimiria o
+      // clique seguinte.
+      if (moveu <= LIMIAR_ARRASTO) return;
+      // A captura começa só aqui, quando o arrasto se confirma: capturar já
+      // no pointerdown faria o pointerup de um clique parado sair no trilho
+      // em vez do card, e o clique se perderia.
+      if (!track.hasPointerCapture(e.pointerId)) {
+        track.setPointerCapture(e.pointerId);
+        track.classList.add("cursor-grabbing");
+      }
+      e.preventDefault();
+      track.scrollLeft = scrollInicial - delta;
+      normalizar();
+    });
+
+    function soltar(e: PointerEvent) {
+      if (!arrastando) return;
+      arrastando = false;
+      if (track!.hasPointerCapture(e.pointerId)) track!.releasePointerCapture(e.pointerId);
+      track!.classList.remove("cursor-grabbing");
+      // Só reposiciona se houve arrasto: normalizar num clique parado moveria
+      // o card para fora do cursor entre o pointerdown e o pointerup, e o
+      // navegador deixaria de reconhecer o clique.
+      if (moveu > LIMIAR_ARRASTO) normalizar();
+    }
+    track.addEventListener("pointerup", soltar);
+    track.addEventListener("pointercancel", soltar);
+
+    // Um arrasto não deve disparar o link/clique que estiver sob o cursor.
+    track.addEventListener(
+      "click",
+      (e) => {
+        if (moveu > LIMIAR_ARRASTO) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      },
+      true,
+    );
+
+    // Toque e trackpad rolam nativamente: só reposiciona ao fim do gesto.
+    let fimDoScroll = 0;
+    track.addEventListener(
+      "scroll",
+      () => {
+        if (arrastando) return;
+        clearTimeout(fimDoScroll);
+        fimDoScroll = window.setTimeout(normalizar, 120);
+      },
+      { passive: true },
+    );
+  }
+</script>

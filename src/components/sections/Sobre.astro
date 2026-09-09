@@ -1,0 +1,94 @@
+---
+import { Image } from "astro:assets";
+import fotoSobre from "../../assets/images/sobre-paulo.webp";
+import WhatsAppIcon from "../global/WhatsAppIcon.astro";
+
+const WA_NUMBER = import.meta.env.PUBLIC_WA_NUMBER || "";
+const WA_MESSAGE =
+  import.meta.env.PUBLIC_WA_MESSAGE ||
+  "Olá! Vi o site e gostaria de saber mais sobre o adestramento.";
+const WA_LINK = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MESSAGE)}`;
+---
+
+<!-- O container desta seção no Figma tem 930px (padding lateral de 495px em
+     1920), não os 1300px das demais. Foto de 444.09px + card de 485.91px. -->
+<section id="sobre" class="relative bg-surface-alt">
+  <div class="mx-auto flex w-full max-w-[930px] flex-col px-5 py-[120px] md:flex-row md:px-0">
+    <div class="md:w-[444.09px] md:shrink-0" data-animate-left>
+      <Image
+        src={fotoSobre}
+        alt="Paulo Bernardo em estúdio com dois border collies"
+        class="h-full w-full object-cover"
+        width={768}
+        height={1024}
+      />
+    </div>
+
+    <div
+      class="flex flex-col gap-5 bg-background px-6 py-14 md:w-[485.91px] md:px-10 md:pb-[119.66px] md:pt-[79px]"
+      data-animate-right
+    >
+      <h2 class="font-serif text-[38.4px] font-bold uppercase leading-[35.2px] tracking-normal text-text-main">
+        Paulo Bernardo
+      </h2>
+      <p class="font-sans text-[19.2px] leading-[19.2px] tracking-[0.2333em] text-text-soft">
+        Adestrador de cães
+      </p>
+
+      <div class="flex flex-col gap-[22.1px] font-sans text-[17.6px] font-medium leading-[24px] text-text-soft md:text-[19.2px] md:leading-[22.4px]">
+        <p>
+          Sempre estive cercado por cães e, desde 2008,<br class="hidden md:inline" />
+          transformei essa paixão em profissão.
+        </p>
+        <p>
+          Trabalho com responsabilidade, técnica e<br class="hidden md:inline" />
+          sensibilidade, buscando sempre entender o<br class="hidden md:inline" />
+          comportamento de cada animal para oferecer<br class="hidden md:inline" />
+          um resultado real e duradouro.
+        </p>
+        <p>
+          Meu propósito é ajudar você e seu cão a<br class="hidden md:inline" />
+          viverem melhor juntos.
+        </p>
+      </div>
+
+      <a
+        href={WA_LINK}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-primary w-full gap-[12px] self-start px-[30px] py-5 text-[17.6px] font-medium sm:w-auto"
+        data-tracking="whatsapp-sobre"
+        data-section="sobre"
+      >
+        <WhatsAppIcon class="h-[25px] w-[25px] shrink-0" />
+        <span class="whitespace-nowrap">Fale agora pelo WhatsApp!</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Mesma banda do Hero (Seashell + barra amarela 6px/1px). No Figma ela
+       desce 155px sobre o Treino em grupo, atravessando a borda amarela: a
+       borda continua visível dos dois lados da banda. A seção seguinte abre
+       com padding-top de 217px para reservar esse espaço. -->
+  <div class="relative z-10 -mb-[155px] px-[5%] py-2.5" data-animate>
+    <div class="band-yellow mx-auto flex max-w-[930px] flex-col gap-6 p-5 md:flex-row md:gap-[50px]">
+      <!-- Sem padding-right aqui: a linha mais longa mede 398.6px numa
+           coluna de 400px, qualquer recuo extra a faz quebrar. -->
+      <div class="flex flex-1 items-center px-2.5">
+        <p class="font-sans text-[16px] font-medium leading-[24px] text-text-soft md:text-[17.6px] md:leading-[26.4px]">
+          Faço atendimentos em domicílio, com foco total<br class="hidden md:inline" />
+          nas necessidades do seu cão e da sua rotina. Cada<br class="hidden md:inline" />
+          caso é tratado de forma personalizada, com<br class="hidden md:inline" />
+          acompanhamento próximo e orientações claras<br class="hidden md:inline" />
+          para o tutor.
+        </p>
+      </div>
+      <div class="flex flex-1 items-center px-2.5 md:pb-[40.77px] md:pt-[39.87px]">
+        <p class="font-serif text-[26px] font-bold uppercase leading-[1.1] text-text-main md:pr-[9.02px] md:text-[32px] md:leading-[35.2px]">
+          Atendo em São José dos Campos<br class="hidden md:inline" />
+          e região
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

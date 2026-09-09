@@ -1,0 +1,93 @@
+---
+import { Image } from "astro:assets";
+import patternGeo from "../../assets/images/pattern-geo.webp";
+import WhatsAppIcon from "../global/WhatsAppIcon.astro";
+
+// Vídeo promocional (478x850, ~52s). Fica em /public porque o <Image> do
+// Astro só processa imagens. Autoplay + muted + loop: vira uma vitrine em
+// movimento sem controles, e o muted é o que libera o autoplay no navegador.
+const VIDEO_TREINO = "/video/treino-em-grupo.mp4";
+
+const WA_NUMBER = import.meta.env.PUBLIC_WA_NUMBER || "";
+const WA_MESSAGE = "Olá! Quero saber mais sobre o treino em grupo aos sábados.";
+const WA_LINK = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MESSAGE)}`;
+
+const topicos = ["Obediência básica", "Sociabilização", "Orientação comportamental"];
+---
+
+<!-- O padding-top reserva o espaço da banda "Atendo em São José dos Campos",
+     que vem do Sobre sobreposta a esta seção. Calibrado para deixar 62px
+     entre o fim da banda e o flyer, como no Figma (banda 1817:510). -->
+<section
+  id="treino-em-grupo"
+  class="relative border-y-[7px] border-secondary bg-dark pb-[120px] pt-[200px] text-white"
+>
+  <!-- Mesma trama do Diferenciais, aqui a 15% sobre o preto. Fica no fluxo
+       (sem -z-10) para não brigar com a banda sobreposta que vem do Sobre. -->
+  <Image
+    src={patternGeo}
+    alt=""
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-15"
+    width={1920}
+    height={854}
+    loading="lazy"
+  />
+
+  <div class="container-wide relative">
+    <div class="flex flex-col items-center gap-10 md:flex-row md:items-stretch md:gap-5">
+      <!-- No Figma o vídeo fica encostado à direita da sua coluna. -->
+      <div class="flex w-full justify-center md:flex-1 md:justify-end" data-animate-left>
+        <div class="w-full max-w-[288px] overflow-hidden rounded-[10px] border border-secondary">
+          <video
+            class="h-full w-full object-cover"
+            src={VIDEO_TREINO}
+            poster="/video/treino-em-grupo-poster.jpg"
+            width="478"
+            height="850"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            aria-label="Vídeo do treino em grupo: obediência básica, sociabilização e orientação comportamental, aos sábados a partir das 16h"
+          ></video>
+        </div>
+      </div>
+
+      <div class="flex flex-1 flex-col justify-center gap-5" data-animate-right>
+        <h2 class="font-serif text-[38.4px] font-extrabold uppercase leading-[38.4px] tracking-[0.0083em] text-secondary">
+          Treino em grupo
+        </h2>
+
+        <ul class="flex flex-col font-sans text-[19.2px] leading-[25.6px] tracking-[0.0333em] text-text-on-dark">
+          {topicos.map((topico) => (
+            <li class="flex items-center gap-[2.5px]">
+              <span
+                class="h-[10px] w-[10px] shrink-0 rounded-full bg-secondary"
+                aria-hidden="true"
+              ></span>
+              <span class="pl-[5px]">{topico}</span>
+            </li>
+          ))}
+        </ul>
+
+        <p class="font-sans text-[19.2px] font-medium leading-[22.4px] text-text-on-dark">
+          Aos sábado, a partir das 16h
+        </p>
+
+        <a
+          href={WA_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-primary w-full gap-[12px] self-start px-[30px] py-2.5 text-[17.6px] font-medium sm:w-auto"
+          data-tracking="whatsapp-treino-grupo"
+          data-section="treino-em-grupo"
+        >
+          <WhatsAppIcon class="h-[25px] w-[25px] shrink-0" />
+          <span class="whitespace-nowrap">Consulte mais informações</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

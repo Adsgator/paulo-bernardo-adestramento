@@ -1,0 +1,232 @@
+---
+import { Image } from "astro:assets";
+import patternGeo from "../../assets/images/pattern-geo.webp";
+import WhatsAppIcon from "../global/WhatsAppIcon.astro";
+
+const WA_NUMBER = import.meta.env.PUBLIC_WA_NUMBER || "";
+const WA_MESSAGE =
+  import.meta.env.PUBLIC_WA_MESSAGE ||
+  "Olá! Vi o site e gostaria de saber mais sobre o adestramento.";
+const WA_LINK = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MESSAGE)}`;
+
+// Endpoint do formulário (FormSubmit, no modo /ajax/). Vazio = form
+// desabilitado com aviso em vez de fingir que enviou.
+const FORM_ENDPOINT = import.meta.env.PUBLIC_FORM_ENDPOINT || "";
+
+// Contrato em PDF. Nenhum serviço de formulário gratuito envia anexo na
+// autoresposta, então o download começa na própria página assim que o
+// envio é confirmado — o cliente sai com o arquivo na hora.
+const CONTRATO_PDF = "/contrato-adestramento.pdf";
+
+const inputClass =
+  "w-full rounded-lg border border-input-border bg-background px-3 py-2 font-sans text-[16px] text-text-main outline-none placeholder:text-placeholder focus-visible:border-primary";
+
+const painelClass =
+  "rounded-[40px] border-b border-white/20 bg-white/70 px-5 py-8 text-center backdrop-blur-[3px] sm:p-[60px]";
+const tituloClass =
+  "font-serif text-[34px] font-semibold leading-[1.1] tracking-normal text-text-main md:text-[44.8px]";
+const subtituloClass =
+  "mx-auto max-w-[468px] font-sans text-[17.6px] font-medium leading-[24px] text-text-soft md:text-[19.2px] md:leading-[22.4px]";
+---
+
+<section id="contato" class="relative isolate bg-diferenciais py-16 md:py-[100px]">
+  <Image
+    src={patternGeo}
+    alt=""
+    aria-hidden="true"
+    class="absolute inset-0 -z-10 h-full w-full object-cover opacity-50"
+    width={1920}
+    height={1080}
+    loading="lazy"
+  />
+  <div class="mx-auto flex w-full max-w-[1020px] flex-col gap-5 px-5">
+    <div class={painelClass} data-animate-left>
+      <h2 class={tituloClass}>Solicite seu contrato</h2>
+      <p class={`${subtituloClass} mt-5`}>
+        Preencha seus dados abaixo e clique em enviar. O<br class="hidden md:inline" />
+        download do contrato começa na hora.
+      </p>
+
+      <form
+        id="contrato-form"
+        class="mx-auto mt-5 grid max-w-[495px] gap-2.5 text-left sm:grid-cols-2"
+        method="POST"
+        action={FORM_ENDPOINT || undefined}
+        data-contrato={CONTRATO_PDF}
+        novalidate
+      >
+        <input
+          type="text"
+          name="nome"
+          required
+          autocomplete="given-name"
+          placeholder="Nome*"
+          aria-label="Nome"
+          class={inputClass}
+        />
+        <input
+          type="text"
+          name="sobrenome"
+          required
+          autocomplete="family-name"
+          placeholder="Sobrenome*"
+          aria-label="Sobrenome"
+          class={inputClass}
+        />
+        <input
+          type="email"
+          name="email"
+          required
+          autocomplete="email"
+          placeholder="E-mail*"
+          aria-label="E-mail"
+          class={`${inputClass} sm:col-span-2`}
+        />
+        <input
+          type="tel"
+          name="whatsapp"
+          required
+          autocomplete="tel"
+          inputmode="tel"
+          placeholder="WhatsApp*"
+          aria-label="WhatsApp"
+          class={`${inputClass} sm:col-span-2`}
+        />
+        <textarea
+          name="mensagem"
+          rows="5"
+          placeholder="Como posso te ajudar com seu cão?"
+          aria-label="Como posso te ajudar com seu cão?"
+          class={`${inputClass} h-[143px] resize-y leading-[24px] sm:col-span-2`}
+        ></textarea>
+
+        {/* Honeypot anti-spam — invisível para humanos */}
+        <input
+          type="text"
+          name="_gotcha"
+          tabindex="-1"
+          autocomplete="off"
+          class="hidden"
+          aria-hidden="true"
+        />
+
+        {/* Campos de controle do FormSubmit: assunto e formato do e-mail
+            que chega para o Paulo. */}
+        <input type="hidden" name="_subject" value="Novo pedido de contrato pelo site" />
+        <input type="hidden" name="_template" value="table" />
+
+        <div class="pt-2.5 sm:col-span-2">
+          <button
+            type="submit"
+            class="h-[60px] w-full rounded-lg border border-secondary bg-secondary px-4 py-2 font-sans text-[16px] font-medium text-primary-dark shadow-[0px_1px_1px_0px_rgba(238,238,238,1)] transition-all duration-300 hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60"
+            data-tracking="form-contrato"
+            data-section="contato"
+          >
+            Enviar
+          </button>
+          <p id="form-status" class="mt-3 font-sans text-[16px]" role="status" aria-live="polite"></p>
+          {/* Rede de segurança: se o navegador bloquear o download
+              automático, a pessoa ainda consegue pegar o contrato. */}
+          <a
+            id="contrato-link"
+            href={CONTRATO_PDF}
+            download
+            hidden
+            class="mt-2 inline-block font-sans text-[16px] font-semibold text-primary underline underline-offset-4"
+          >
+            Baixar o contrato em PDF
+          </a>
+        </div>
+      </form>
+    </div>
+
+    <div class={painelClass} data-animate-right>
+      <h2 class={tituloClass}>Agende agora sua aula</h2>
+      <p class={`${subtituloClass} mt-5`}>
+        Vamos juntos transformar o comportamento do seu<br class="hidden md:inline" />
+        cão e sua rotina com ele.
+      </p>
+      <a
+        href={WA_LINK}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-primary mt-5 w-full gap-[12px] px-[30px] py-5 text-[17.6px] font-medium sm:w-auto"
+        data-tracking="whatsapp-contato"
+        data-section="contato"
+      >
+        <WhatsAppIcon class="h-[25px] w-[25px] shrink-0" />
+        <span class="whitespace-nowrap">Fale agora pelo WhatsApp!</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById("contrato-form") as HTMLFormElement | null;
+  const status = document.getElementById("form-status");
+  const botao = form?.querySelector<HTMLButtonElement>("button[type=submit]");
+
+  if (form && status && botao) {
+    const BASE = "mt-3 font-sans text-[16px]";
+    const avisar = (texto: string, tom: "info" | "erro" | "ok") => {
+      status.textContent = texto;
+      status.className = `${BASE} ${tom === "info" ? "text-text-soft" : "text-primary"}`;
+    };
+
+    // Dispara o download do contrato e revela o link de apoio, caso o
+    // navegador bloqueie downloads iniciados por script.
+    function baixarContrato() {
+      const url = form!.dataset.contrato;
+      if (!url) return;
+
+      document.getElementById("contrato-link")?.removeAttribute("hidden");
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "contrato-adestramento.pdf";
+      document.body.append(link);
+      link.click();
+      link.remove();
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Sem endpoint configurado o envio não sai do lugar: avisa em vez de
+      // fingir sucesso e perder o contato.
+      // Lê o ATRIBUTO, não a propriedade: form.action resolve para a URL da
+      // página quando o atributo está vazio, o que faria o POST cair na
+      // própria home e o usuário ver uma falsa confirmação.
+      const endpoint = form.getAttribute("action");
+      if (!endpoint) {
+        avisar("O formulário ainda não está configurado. Fale com a gente pelo WhatsApp.", "erro");
+        return;
+      }
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      // Trava o botão para não gerar envios duplicados no clique repetido.
+      botao.disabled = true;
+      avisar("Enviando…", "info");
+
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        });
+        if (!response.ok) throw new Error("Falha no envio");
+        form.reset();
+        avisar("Pronto! O download do seu contrato vai começar em instantes.", "ok");
+        baixarContrato();
+      } catch {
+        avisar("Não foi possível enviar agora. Tente novamente ou fale pelo WhatsApp.", "erro");
+      } finally {
+        botao.disabled = false;
+      }
+    });
+  }
+</script>

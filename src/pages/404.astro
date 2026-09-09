@@ -1,0 +1,133 @@
+---
+// Página 404 — standalone, sem Layout (sem GTM, sem Header/Footer completos).
+// Tem header e footer embutidos em estilo inline para ser completamente autossuficiente.
+//
+// Número e mensagem vêm de .env (mesmas vars do WhatsAppFloat.astro).
+const waNumber = import.meta.env.PUBLIC_WA_NUMBER || "SEUNUMERO";
+const waMessage =
+  import.meta.env.PUBLIC_WA_MESSAGE || "Olá! Vi seu site e gostaria de mais informações.";
+const WA_LINK = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+---
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, follow" />
+
+  <title>Página não encontrada | Paulo Bernardo — Adestrador de Cães</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <style>
+    @import "@fontsource/nunito/400.css";
+    @import "@fontsource/nunito/600.css";
+    @import "@fontsource/barlow-condensed/700.css";
+    @import "../styles/tokens.css";
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--t-font-sans);
+      background: var(--t-surface);
+      color: var(--t-text-main);
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 40px 24px;
+      text-align: center;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+    .bg-number {
+      position: absolute;
+      font-family: var(--t-font-serif);
+      font-size: clamp(200px, 40vw, 360px);
+      font-weight: 800;
+      color: color-mix(in srgb, var(--t-secondary) 22%, transparent);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+    }
+    .content { position: relative; z-index: 1; max-width: 420px; }
+    .label {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--t-text-muted);
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-family: var(--t-font-serif);
+      font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 700;
+      text-transform: uppercase;
+      line-height: 1.15; margin-bottom: 14px;
+    }
+    p { font-size: 0.95rem; color: var(--t-text-soft); line-height: 1.7; margin-bottom: 32px; }
+    .btn-group { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--t-font-sans); font-size: 0.9rem; font-weight: 700;
+      padding: 14px 28px; border-radius: 10px; text-decoration: none;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .btn:focus-visible { outline: 3px solid var(--t-primary); outline-offset: 2px; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { background: var(--t-secondary); color: var(--t-primary); }
+    .btn-ghost { border: 1px solid var(--t-border); color: var(--t-text-soft); background: var(--t-background); }
+    .btn-ghost:hover { border-color: var(--t-primary); color: var(--t-primary); }
+    @media (prefers-reduced-motion: reduce) { .bg-number { animation: none; } }
+  </style>
+</head>
+<body>
+
+  <p class="bg-number" id="bg-404" aria-hidden="true">404</p>
+
+  <div class="content">
+    <p class="label">Oops</p>
+    <h1>Essa página não foi encontrada</h1>
+    <p>
+      A página que você buscou não existe mais ou foi movida. Mas eu estou aqui
+      para ajudar você e seu cão.
+    </p>
+    <div class="btn-group">
+      <a
+        href="/"
+        class="btn btn-primary"
+        id="btn-404-home"
+        data-tracking="click-404-home"
+      >
+        Voltar ao início
+      </a>
+      <a
+        href={WA_LINK}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-ghost"
+        id="btn-404-whatsapp"
+        data-tracking="click-404-whatsapp"
+      >
+        Falar no WhatsApp
+      </a>
+    </div>
+  </div>
+
+  <script is:inline>
+    // Animação de flutuação do número 404 (desativada com prefers-reduced-motion)
+    (function () {
+      var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReduced) return;
+      var el = document.getElementById('bg-404');
+      if (!el) return;
+      var start = null;
+      function animate(ts) {
+        if (!start) start = ts;
+        var elapsed = (ts - start) / 1000;
+        var y = Math.sin(elapsed * (Math.PI / 4)) * 10;
+        el.style.transform = 'translateY(' + y + 'px)';
+        requestAnimationFrame(animate);
+      }
+      requestAnimationFrame(animate);
+    })();
+  </script>
+</body>
+</html>

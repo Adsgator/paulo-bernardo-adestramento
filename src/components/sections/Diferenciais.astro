@@ -1,0 +1,164 @@
+---
+import { Image } from "astro:assets";
+import patternGeo from "../../assets/images/pattern-geo.webp";
+import WhatsAppIcon from "../global/WhatsAppIcon.astro";
+
+const WA_NUMBER = import.meta.env.PUBLIC_WA_NUMBER || "";
+const WA_MESSAGE =
+  import.meta.env.PUBLIC_WA_MESSAGE ||
+  "Olá! Vi o site e gostaria de saber mais sobre o adestramento.";
+const WA_LINK = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MESSAGE)}`;
+
+// Os cards vêm em 3 linhas de 2. As linhas são deslocadas alternadamente
+// (60px à esquerda / à direita), como no design.
+// `featured` = card escuro com destaque amarelo; os demais são brancos com
+// borda cinza e o trecho em destaque em preto.
+const linhas = [
+  {
+    recuo: "esquerda",
+    cards: [
+      {
+        featured: true,
+        parts: [
+          { t: "Mais de " },
+          { t: "15 anos de experiência", strong: true },
+          { t: " com cães e tutores" },
+        ],
+      },
+      {
+        parts: [
+          { t: "Métodos positivos", strong: true },
+          { t: " que reduzem ansiedade e comportamentos indesejados" },
+        ],
+      },
+    ],
+  },
+  {
+    recuo: "direita",
+    cards: [
+      {
+        parts: [
+          { t: "Acompanho o progresso de cada cão.", strong: true },
+          { t: " Respeitando o tempo e o ritmo de cada um." },
+        ],
+      },
+      {
+        parts: [{ t: "Atendimento com " }, { t: "autoridade, empatia e dedicação", strong: true }],
+      },
+    ],
+  },
+  {
+    recuo: "esquerda",
+    cards: [
+      {
+        parts: [
+          { t: "Resultados construídos " },
+          { t: "em parceria com você", strong: true },
+          { t: ", tutor" },
+        ],
+      },
+      { parts: [{ t: "Foco em " }, { t: "harmonia, educação e bem-estar", strong: true }] },
+    ],
+  },
+];
+---
+
+<section id="diferenciais" class="relative isolate bg-diferenciais py-16 text-white md:py-[120px]">
+  <Image
+    src={patternGeo}
+    alt=""
+    aria-hidden="true"
+    class="absolute inset-0 -z-10 h-full w-full object-cover"
+    width={1920}
+    height={1080}
+    loading="lazy"
+  />
+  <div class="container-wide flex flex-col gap-5">
+    <div class="text-center">
+      <span
+        class="block font-sans text-[19.2px] font-medium leading-[19.2px] tracking-[0.0667em] text-white"
+        data-animate
+      >
+        Diferenciais
+      </span>
+      <h2
+        class="mt-[10px] font-serif text-[32px] font-extrabold uppercase leading-[1.05] tracking-[0.0083em] text-secondary md:text-[38.4px] md:leading-[38.4px]"
+        data-animate
+      >
+        Por que escolher meu trabalho?
+      </h2>
+      <p
+        class="mx-auto mt-[18px] max-w-[512px] font-sans text-[17.6px] font-medium leading-[24px] text-white md:text-[19.2px] md:leading-[22.4px]"
+        data-animate
+      >
+        Adestrar vai muito além de ensinar comandos. É sobre<br class="hidden md:inline" />
+        compreender o cão e criar uma relação de confiança e<br class="hidden md:inline" />
+        respeito.
+      </p>
+    </div>
+
+    {/* No mobile os cards ficam colados numa lista contínua, sem gap e sem a
+        borda grossa; no desktop viram 3 linhas de 2 com recuo alternado. */}
+    <ul class="flex flex-col md:gap-5" data-animate-group>
+      {linhas.map((linha) => (
+        <li>
+          <ul
+            class:list={[
+              "flex flex-col md:flex-row md:gap-5",
+              linha.recuo === "esquerda" ? "md:pl-[60px]" : "md:pr-[60px]",
+            ]}
+          >
+            {linha.cards.map((card) => (
+              <li
+                class:list={[
+                  "flex flex-1 items-center p-6 font-sans text-[17.6px] leading-[24px] md:p-10 md:text-[19.2px] md:leading-[22.4px]",
+                  card.featured
+                    ? "bg-footer text-white"
+                    : "border-b border-text-muted/40 bg-background text-text-main md:border-[3px] md:border-text-muted",
+                ]}
+                data-animate-item
+              >
+                <span>
+                  {card.parts.map((part) =>
+                    part.strong ? (
+                      <strong
+                        class:list={[
+                          "font-bold",
+                          card.featured ? "text-secondary" : "text-primary-dark",
+                        ]}
+                        set:text={part.t}
+                      />
+                    ) : (
+                      <span set:text={part.t} />
+                    ),
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ul>
+
+    <div
+      class="mx-auto flex w-full max-w-[975px] flex-col items-center gap-8 p-2.5 pt-10 text-center md:flex-row md:justify-center md:gap-[60px] md:text-left"
+      data-animate
+    >
+      <p class="w-full max-w-[382px] font-sans text-[19.2px] font-medium leading-[22.4px] text-secondary">
+        "O maior resultado é ver um tutor<br class="hidden md:inline" />
+        orgulhoso do comportamento do seu cão."
+      </p>
+      <a
+        href={WA_LINK}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-primary w-full shrink-0 gap-[12px] px-[30px] py-5 text-[17.6px] font-medium sm:w-auto"
+        data-tracking="whatsapp-diferenciais"
+        data-section="diferenciais"
+      >
+        <WhatsAppIcon class="h-[25px] w-[25px] shrink-0" />
+        <span class="whitespace-nowrap">Fale agora pelo WhatsApp!</span>
+      </a>
+    </div>
+  </div>
+</section>

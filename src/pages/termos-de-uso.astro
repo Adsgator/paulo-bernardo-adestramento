@@ -1,0 +1,225 @@
+---
+// Termos de Uso — página standalone (header e footer próprios).
+// Dados do responsável já preenchidos (CNPJ 37.040.687/0001-07,
+// e-mail ph_bernardo@yahoo.com.br).
+
+import { Image } from "astro:assets";
+import logoImg from "../assets/images/logo-paulo-bernardo.svg";
+
+const currentYear = new Date().getFullYear();
+const SITE_URL = import.meta.env.PUBLIC_SITE_URL || "https://paulobernardoadestrador.com.br";
+const DOMINIO = SITE_URL.replace(/^https?:\/\//, "");
+---
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, follow" />
+
+  <title>Termos de Uso | Paulo Bernardo — Adestrador de Cães</title>
+  <meta name="description" content="Termos de uso do site de Paulo Bernardo, adestrador de cães em São José dos Campos." />
+
+  <link rel="canonical" href={`${SITE_URL}/termos-de-uso`} />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <style>
+    @import "@fontsource/nunito/400.css";
+    @import "@fontsource/nunito/600.css";
+    @import "@fontsource/barlow-condensed/700.css";
+    @import "../styles/tokens.css";
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: var(--t-font-sans);
+      font-weight: 400;
+      background: var(--t-surface);
+      color: var(--t-text-main);
+      -webkit-font-smoothing: antialiased;
+      padding-top: 88px;
+    }
+
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      background: var(--t-background);
+      border-bottom: 1px solid var(--t-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .header-content {
+      max-width: 1280px;
+      width: 100%;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+    }
+    header .logo { display: flex; align-items: center; text-decoration: none; }
+    header .logo:focus-visible { outline: 2px solid var(--t-primary); outline-offset: 4px; }
+    header .logo img { height: 40px; width: auto; display: block; }
+    header .back {
+      font-size: 0.85rem;
+      color: var(--t-text-soft);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s ease;
+    }
+    header .back:hover { color: var(--t-primary); }
+    header .back:focus-visible { outline: 2px solid var(--t-primary); outline-offset: 2px; }
+
+    main { max-width: 720px; margin: 0 auto; padding: 80px 24px; width: 100%; }
+
+    h1 {
+      font-family: var(--t-font-serif);
+      font-size: 2.4rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--t-text-main);
+      margin-bottom: 12px;
+    }
+    .updated {
+      font-size: 0.8rem;
+      color: var(--t-text-muted);
+      margin-bottom: 48px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+    h2 {
+      font-family: var(--t-font-serif);
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--t-text-main);
+      margin-top: 44px;
+      margin-bottom: 16px;
+    }
+    p, li { font-size: 16px; line-height: 1.75; color: var(--t-text-soft); margin-bottom: 14px; }
+    ul { padding-left: 24px; margin-bottom: 16px; }
+    li { margin-bottom: 8px; }
+    a {
+      color: var(--t-text-main);
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+      border-bottom: 2px solid var(--t-secondary);
+    }
+    a:hover { opacity: 0.75; }
+    a:focus-visible { outline: 2px solid var(--t-primary); outline-offset: 2px; }
+    strong { font-weight: 600; color: var(--t-text-main); }
+
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      border-top: 1px solid var(--t-border);
+      font-size: 0.75rem;
+      color: var(--t-text-muted);
+      background: var(--t-background);
+      line-height: 1.6;
+      margin-top: 60px;
+    }
+
+    @media (max-width: 640px) {
+      body { padding-top: 72px; }
+      .header-content { padding: 10px 16px; }
+      header .logo img { height: 32px; }
+      h1 { font-size: 1.9rem; }
+      h2 { font-size: 1.2rem; }
+      p, li { font-size: 15px; }
+      main { padding: 60px 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      a { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <a href="/" aria-label="Ir para o início" class="logo">
+        <Image src={logoImg} alt="Cão Belo Adestramento" width={40} height={40} loading="eager" />
+      </a>
+      <a href="/" class="back">← Voltar</a>
+    </div>
+  </header>
+
+  <main>
+    <h1>Termos de Uso</h1>
+    <p class="updated">
+      Última atualização: {new Date().toLocaleDateString("pt-BR", { month: "long", year: "numeric" })}
+    </p>
+
+    <p>
+      Ao acessar o site <strong>{DOMINIO}</strong>, você concorda com os presentes
+      Termos de Uso. Se não concordar, por favor não utilize o site.
+    </p>
+
+    <h2>1. Finalidade do site</h2>
+    <p>
+      Este site tem finalidade exclusivamente informativa e de captação de contatos
+      para os serviços de adestramento, passeios, palestras e cursos prestados por
+      <strong>Paulo Bernardo</strong> (Cão Belo Adestramento), em São José dos Campos e região.
+    </p>
+
+    <h2>2. Informações e conteúdo</h2>
+    <p>
+      As orientações publicadas neste site são de caráter geral e não substituem uma
+      avaliação individual do seu cão. Cada caso é analisado de forma personalizada
+      durante o atendimento.
+    </p>
+
+    <h2>3. Formulário e modelo de contrato</h2>
+    <p>
+      O formulário "Solicite seu contrato" disponibiliza um modelo de contrato de
+      prestação de serviços em PDF, para leitura. O download do modelo não cria
+      vínculo contratual: a contratação só se efetiva com a assinatura entre as
+      partes e a confirmação do atendimento.
+    </p>
+
+    <h2>4. Propriedade intelectual</h2>
+    <p>
+      Todos os textos, imagens, logotipos e demais elementos deste site são de
+      propriedade de <strong>Paulo Bernardo</strong> ou de terceiros que licenciaram
+      seu uso. É proibida a reprodução sem autorização prévia e por escrito.
+    </p>
+
+    <h2>5. Links externos</h2>
+    <p>
+      Este site contém links para plataformas de terceiros (Instagram, WhatsApp,
+      Google e sites de parceiros). Não nos responsabilizamos pelo conteúdo ou pelas
+      práticas de privacidade dessas plataformas.
+    </p>
+
+    <h2>6. Limitação de responsabilidade</h2>
+    <p>
+      Não nos responsabilizamos por danos diretos ou indiretos decorrentes do uso ou
+      da impossibilidade de uso deste site.
+    </p>
+
+    <h2>7. Alterações</h2>
+    <p>
+      Estes Termos podem ser atualizados a qualquer momento. A versão vigente será
+      sempre a disponível nesta página, com a data de atualização indicada.
+    </p>
+
+    <h2>8. Contato</h2>
+    <p>
+      Paulo Bernardo — Cão Belo Adestramento<br />
+      CNPJ: 37.040.687/0001-07<br />
+      E-mail: <a href="mailto:ph_bernardo@yahoo.com.br">ph_bernardo@yahoo.com.br</a>
+    </p>
+  </main>
+
+  <footer>
+    © {currentYear} Paulo Bernardo — Cão Belo Adestramento
+  </footer>
+</body>
+</html>

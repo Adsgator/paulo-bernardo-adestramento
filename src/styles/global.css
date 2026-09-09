@@ -1,0 +1,428 @@
+/* ─────────────────────────────────────────────────────────────
+   global.css — Tailwind v4 (CSS-first) + base Adsgator
+   ─────────────────────────────────────────────────────────────
+   Ordem:
+     1. tokens.css        → valores (CSS custom properties) do cliente
+     2. @import tailwindcss → engine v4
+     3. @theme            → registra os tokens como utilitários Tailwind
+     4. @layer base/components → reset, tipografia e classes de UI
+
+   Não existe tailwind.config.js. Para trocar a paleta de um cliente,
+   edite SOMENTE tokens.css.
+   ───────────────────────────────────────────────────────────── */
+
+/* Fontes do cliente — corpo Nunito, títulos Barlow Condensed */
+@import "@fontsource/nunito/400.css";
+@import "@fontsource/nunito/500.css";
+@import "@fontsource/nunito/600.css";
+@import "@fontsource/nunito/800.css";
+@import "@fontsource/barlow-condensed/600.css";
+@import "@fontsource/barlow-condensed/700.css";
+@import "@fontsource/barlow-condensed/800.css";
+
+@import "./tokens.css";
+@import "tailwindcss";
+
+/* Dark mode por classe (.dark no <html>) em vez de media query */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── @theme — registra tokens como utilitários ──────────────
+   Os valores apontam para as CSS vars de tokens.css, então
+   bg-primary, text-text-main, etc. respeitam o tema em runtime
+   (inclusive a troca para .dark). */
+@theme inline {
+  --color-primary: var(--t-primary);
+  --color-primary-dark: var(--t-primary-dark);
+  --color-secondary: var(--t-secondary);
+  --color-complement: var(--t-complement);
+  --color-background: var(--t-background);
+  --color-surface: var(--t-surface);
+  --color-surface-alt: var(--t-surface-alt);
+  --color-overlap: var(--t-overlap);
+  --color-dark: var(--t-dark);
+  --color-diferenciais: var(--t-diferenciais);
+  --color-footer: var(--t-footer);
+  --color-border: var(--t-border);
+  --color-divider: var(--t-divider);
+  --color-input-border: var(--t-input-border);
+  --color-placeholder: var(--t-placeholder);
+  --color-text-main: var(--t-text-main);
+  --color-text-soft: var(--t-text-soft);
+  --color-text-muted: var(--t-text-muted);
+  --color-text-on-dark: var(--t-text-on-dark);
+  --color-text-strong: var(--t-text-strong);
+  --color-wa: var(--t-wa);
+  --color-star: var(--t-star);
+
+  --font-serif: var(--t-font-serif);
+  --font-sans: var(--t-font-sans);
+
+  /* Escala tipográfica — Barlow Condensed é estreita, então os tamanhos
+     de display são um pouco maiores que o padrão. O design usa H1 ~40px
+     desktop; o clamp abaixo chega perto disso e reduz bem no mobile. */
+  --text-display-xl: clamp(2.1rem, 5.2vw, 2.9rem);
+  --text-display-xl--line-height: 1.05;
+  --text-display-xl--letter-spacing: 0;
+  --text-display-lg: clamp(1.8rem, 4vw, 2.4rem);
+  --text-display-lg--line-height: 1.1;
+  --text-display-lg--letter-spacing: 0;
+  --text-display-md: clamp(1.5rem, 3vw, 1.9rem);
+  --text-display-md--line-height: 1.15;
+  --text-display-sm: clamp(1.3rem, 2.5vw, 1.6rem);
+  --text-display-sm--line-height: 1.2;
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.65;
+  --text-body-md: 1rem;
+  --text-body-md--line-height: 1.6;
+  --text-body-sm: 0.9rem;
+  --text-body-sm--line-height: 1.55;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1;
+  --text-label--letter-spacing: 0.14em;
+
+  /* Larguras máximas — 1300px é o container do Figma (padding 310px em 1920) */
+  --container-content: 860px;
+  --container-wide: 1300px;
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 20px;
+
+  /* Sombras */
+  --shadow-card: 0 2px 16px rgba(20, 20, 20, 0.07);
+  --shadow-card-hover: 0 8px 32px rgba(20, 20, 20, 0.12);
+  --shadow-float: 0 4px 24px rgba(20, 20, 20, 0.18);
+  --shadow-primary-sm: 0 4px 14px rgba(20, 20, 20, 0.22);
+  --shadow-primary-md: 0 8px 24px rgba(20, 20, 20, 0.28);
+  --shadow-secondary-sm: 0 4px 15px rgba(255, 212, 0, 0.35);
+  --shadow-secondary-md: 0 8px 25px rgba(255, 212, 0, 0.45);
+
+  /* Easing */
+  --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-snappy: cubic-bezier(0.19, 1, 0.22, 1);
+
+  /* Animações */
+  --animate-fade-up: fade-up 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  --animate-fade-in: fade-in 0.5s ease both;
+  --animate-shimmer: shimmer 1.5s infinite;
+}
+
+/* Larguras usadas como max-w-content / max-w-wide (utilitários custom) */
+@utility max-w-content {
+  max-width: var(--container-content);
+}
+@utility max-w-wide {
+  max-width: var(--container-wide);
+}
+
+/* ── BASE ────────────────────────────────────────────────── */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text-main);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    letter-spacing: 0.005em;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-secondary) 45%, transparent);
+    color: var(--color-primary);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ── COMPONENTS ──────────────────────────────────────────── */
+@layer components {
+  .container-content {
+    @apply w-[90%] max-w-content mx-auto;
+  }
+  .container-wide {
+    @apply w-[90%] max-w-wide mx-auto;
+  }
+  .section-py {
+    @apply py-[clamp(5rem,10vw,8rem)];
+  }
+  .section-py-sm {
+    @apply py-[clamp(3rem,6vw,5rem)];
+  }
+  .section-py-lg {
+    @apply py-[clamp(7rem,14vw,12rem)];
+  }
+
+  .label-tag {
+    @apply text-label font-semibold uppercase tracking-[0.14em] text-text-muted font-sans;
+  }
+
+  button,
+  a {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .img-hover {
+    @apply overflow-hidden;
+  }
+  .img-hover img {
+    @apply transition-transform duration-700;
+    transition-timing-function: var(--ease-smooth);
+  }
+  .img-hover:hover img {
+    @apply scale-[1.04];
+  }
+
+  .card-hover {
+    @apply transition-all duration-[350ms];
+    transition-timing-function: var(--ease-smooth);
+  }
+  .card-hover:hover {
+    @apply -translate-y-1;
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .link-underline {
+    @apply relative inline-block;
+  }
+  .link-underline::after {
+    content: "";
+    @apply absolute bottom-0 left-0 w-0 h-px bg-current transition-all duration-300;
+    transition-timing-function: var(--ease-snappy);
+  }
+  .link-underline:hover::after {
+    @apply w-full;
+  }
+
+  /* Botão primário — pill AMARELA CHAPADA com texto preto, cantos levemente
+     arredondados e SEM sombra/shimmer. Réplica do CTA do site original
+     ("Fale agora pelo WhatsApp!"). Aliases legados apontam para o mesmo estilo. */
+  .btn-primary,
+  .btn-primary-mobile,
+  .btn-secondary-gold,
+  .btn-secondary-gold-mobile {
+    @apply inline-flex items-center justify-center gap-2.5
+           bg-secondary text-primary font-sans font-semibold
+           px-7 py-3.5 rounded-[10px]
+           transition-all duration-300
+           hover:brightness-95
+           active:translate-y-0 active:scale-[0.98];
+    transition-timing-function: var(--ease-smooth);
+  }
+  .btn-primary-mobile,
+  .btn-secondary-gold-mobile {
+    @apply w-full px-6 py-3.5;
+  }
+
+  /* Botão escuro — ações secundárias sobre fundo claro */
+  .btn-dark {
+    @apply inline-flex items-center justify-center gap-2
+           bg-primary text-white font-sans font-semibold
+           px-7 py-3.5 rounded-[10px]
+           transition-all duration-300
+           hover:-translate-y-0.5 hover:bg-primary-dark
+           active:translate-y-0 active:scale-[0.98];
+    box-shadow: var(--shadow-primary-sm);
+    transition-timing-function: var(--ease-smooth);
+  }
+  .btn-dark:hover {
+    box-shadow: var(--shadow-primary-md);
+  }
+
+  /* Botão ghost — contorno, sem preenchimento */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           bg-transparent text-primary font-sans font-semibold
+           px-7 py-3.5 rounded-[10px]
+           border border-primary/25
+           transition-all duration-300
+           hover:border-primary hover:bg-primary/5 hover:-translate-y-0.5
+           active:translate-y-0 active:scale-[0.98];
+    transition-timing-function: var(--ease-smooth);
+  }
+
+  /* Badge / pill */
+  .badge {
+    @apply inline-flex items-center gap-1.5 font-sans
+           text-label font-semibold uppercase tracking-[0.12em]
+           px-3.5 py-1.5 rounded-full
+           bg-primary/8 text-primary border border-primary/15;
+  }
+  .badge-secondary {
+    @apply inline-flex items-center gap-1.5 font-sans
+           text-label font-semibold uppercase tracking-[0.12em]
+           px-3.5 py-1.5 rounded-full
+           bg-secondary/20 text-primary border border-secondary/40;
+  }
+
+  /* Card padrão (serviços) — raio 20px, borda fina cinza (#8C8C8C) e SEM
+     sombra. Réplica 1:1 do card do site original. */
+  .card {
+    @apply bg-background rounded-[20px] p-5 border border-text-muted;
+  }
+
+  /* Ícone de serviço — glifo preto em círculo amarelo */
+  .icon-badge {
+    @apply flex shrink-0 items-center justify-center rounded-full bg-secondary text-primary;
+  }
+
+  .blockquote-premium {
+    @apply relative pl-6 border-l-4 border-secondary
+           text-body-lg font-sans italic text-text-soft my-8;
+  }
+  .blockquote-premium::before {
+    content: '"';
+    @apply absolute -top-3 -left-1 text-5xl text-secondary font-serif leading-none;
+  }
+
+  .stat-number {
+    @apply font-serif font-extrabold text-display-lg text-primary leading-none;
+  }
+  .stat-label {
+    @apply text-body-sm text-text-muted mt-1 font-sans;
+  }
+
+  .divider-ornament {
+    @apply flex items-center gap-4 my-8;
+  }
+  .divider-ornament::before,
+  .divider-ornament::after {
+    content: "";
+    @apply flex-1 h-px bg-border;
+  }
+
+  /* ── Réplica do site original ──────────────────────────────
+     Caixa de conteúdo sobreposta entre duas seções: retângulo
+     Seashell, cantos retos, sem sombra, com barra amarela grossa no
+     topo (6px) e fina embaixo (1px). Mesmas medidas no mobile e no
+     desktop (Figma 1817:525 e o equivalente em 1920w). */
+  .band-yellow {
+    @apply relative bg-overlap;
+    border-top: 6px solid var(--t-secondary);
+    border-bottom: 1px solid var(--t-secondary);
+  }
+}
+
+/* ── KEYFRAMES ───────────────────────────────────────────── */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ── LENIS ───────────────────────────────────────────────── */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ── ANIMAÇÕES DE ENTRADA (GSAP controla via [data-animate*]) ── */
+[data-animate] {
+  opacity: 0;
+  transform: translateY(30px);
+}
+[data-animate-left] {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+[data-animate-right] {
+  opacity: 0;
+  transform: translateX(30px);
+}
+[data-animate-scale] {
+  opacity: 0;
+  transform: scale(0.95);
+}
+[data-animate-item] {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-animate],
+  [data-animate-left],
+  [data-animate-right],
+  [data-animate-scale],
+  [data-animate-item] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

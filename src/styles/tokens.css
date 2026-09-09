@@ -1,0 +1,70 @@
+/* ─────────────────────────────────────────────────────────────
+   tokens.css — ÚNICO arquivo que muda entre projetos
+   Cliente: Paulo Bernardo | Adestrador de Cães (Cão Belo Adestramento)
+   ─────────────────────────────────────────────────────────────
+   Valores extraídos do Figma (v7qbDL7cgCBIVfH8my6qTE):
+   Yellow #FFFF00 · Black #000000 · Abbey #454546 (títulos) ·
+   Dove Gray #666666 (corpo) · Gray #8C8C8C (bordas).
+   Título: Barlow Condensed (700/800). Corpo: Nunito (400/500).
+
+   O @theme do global.css mapeia estes tokens para os utilitários
+   Tailwind (bg-primary, text-text-main…). Nada de cor, fonte ou
+   tamanho hardcodado em outros arquivos.
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* ── Marca ──────────────────────────────────────────── */
+  --t-primary: #1a1a1a; /* grafite — blocos escuros, texto forte, botões escuros */
+  --t-primary-dark: #000000; /* preto puro — hover de botão escuro */
+  --t-secondary: #ffff00; /* amarelo da marca — CTA, ícones, destaques.
+                                 Clone 1:1 do site original: o Figma/html.to.design
+                                 usa #FFFF00 puro em tudo (botões, barras, acentos). */
+  --t-complement: #ffff8a; /* amarelo claro — brilho/gradiente do CTA */
+
+  /* ── Superfícies ────────────────────────────────────── */
+  --t-background: #ffffff;
+  --t-surface: #f2f2f2; /* seções alternadas, cards */
+  --t-surface-alt: #e4e4e4; /* seções mais contrastadas — Mercury #E4E4E4 (Sobre, FAQ) */
+  --t-overlap: #f1f1f1; /* caixas sobrepostas entre seções — Seashell #F1F1F1 */
+  --t-dark: #000000; /* "Treino em grupo" — preto puro do site original */
+  --t-diferenciais: #8c8c8c; /* fundo cinza médio de "Diferenciais" e do CTA duplo */
+  --t-footer: #454546; /* rodapé — cinza escuro (Abbey) do site original */
+  --t-border: #d9d9d9; /* divisores e bordas de card */
+  --t-divider: #d5d8dc; /* divisores do accordion — Iron #D5D8DC do original */
+  --t-input-border: #d0d5dd; /* borda dos campos de formulário — Mischka */
+  --t-placeholder: #667085; /* placeholder dos campos — Pale Sky */
+
+  /* ── Texto ──────────────────────────────────────────── */
+  --t-text-main: #454546; /* corpo forte / títulos — Abbey do original */
+  --t-text-soft: #666666; /* subtítulos, descrições (Dove Gray #666 do original) */
+  --t-text-muted: #8c8c8c; /* metadados, legendas (Gray #8C8C8C do original) */
+  --t-text-on-dark: #c9c9c9; /* corpo sobre fundo escuro — Silver #C9C9C9 do original */
+  --t-text-strong: #1f2124; /* perguntas do FAQ — Shark #1F2124 do original */
+
+  /* ── Utilitárias ────────────────────────────────────── */
+  --t-wa: #25d366; /* verde WhatsApp */
+  --t-star: #f5a623; /* dourado das estrelas de avaliação do Google */
+
+  /* ── Tipografia ─────────────────────────────────────── */
+  --t-font-serif: "Barlow Condensed", ui-sans-serif, system-ui, sans-serif; /* headings 700/800 */
+  --t-font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif; /* corpo 400/500 */
+}
+
+/* ── Dark mode ──────────────────────────────────────────
+   Fundo grafite, texto claro. O amarelo da marca se mantém. */
+.dark {
+  --t-background: #121212;
+  --t-surface: #1c1c1c;
+  --t-surface-alt: #262626;
+  --t-overlap: #202020;
+  --t-dark: #0a0a0a;
+  --t-diferenciais: #2a2a2a;
+  --t-footer: #1a1a1a;
+  --t-border: #303030;
+  --t-divider: #3a3a3a;
+  --t-text-strong: #f5f5f5;
+  --t-text-main: #ededed;
+  --t-text-soft: #b4b4b4;
+  --t-text-muted: #7c7c7c;
+  --t-text-on-dark: #c9c9c9;
+}

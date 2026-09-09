@@ -1,0 +1,114 @@
+---
+import { Image } from "astro:assets";
+import iconAdestramento from "../../assets/images/icon-adestramento.svg";
+import iconCurso from "../../assets/images/icon-curso.svg";
+import iconPalestra from "../../assets/images/icon-palestra.svg";
+import iconPasseioEducativo from "../../assets/images/icon-passeio-educativo.svg";
+import iconPasseioRecreativo from "../../assets/images/icon-passeio-recreativo.svg";
+import fotoPremio from "../../assets/images/servicos-paulo-premio.png";
+
+const servicos = [
+  {
+    icon: iconAdestramento,
+    titulo: "Adestramento de cães",
+    texto:
+      "Aulas práticas que ensinam o cão a obedecer, respeitar limites e se comportar com equilíbrio.",
+  },
+  {
+    icon: iconPasseioRecreativo,
+    titulo: "Passeios recreativos",
+    texto: "Caminhadas e brincadeiras que ajudam seu cão a gastar energia e aliviar o estresse.",
+  },
+  {
+    icon: iconPasseioEducativo,
+    titulo: "Passeios educativos",
+    texto:
+      "Corrijo comportamentos durante os passeios, ensinando o cão a se portar bem fora de casa.",
+  },
+  {
+    icon: iconPalestra,
+    titulo: "Palestras",
+    texto:
+      "Falo sobre posse responsável e convivência segura entre pessoas e cães, em escolas, empresas e condomínios.",
+  },
+  {
+    icon: iconCurso,
+    titulo: "Cursos para novos adestradores",
+    texto: "Ensino técnicas eficazes e responsáveis para quem quer iniciar na profissão.",
+  },
+];
+---
+
+<section id="servicos" class="bg-background pb-16 pt-12 md:pb-[120px] md:pt-[80px]">
+  <div class="container-wide">
+    <div class="flex flex-col gap-5 p-2.5 text-center">
+      <span
+        class="font-sans text-[19.2px] font-medium leading-[19.2px] tracking-[0.0667em] text-text-muted"
+        data-animate
+      >
+        Serviços
+      </span>
+      <h2
+        class="font-serif text-[32px] font-extrabold uppercase leading-[1.05] tracking-[0.0083em] text-text-main md:text-[38.4px] md:leading-[38.4px]"
+        data-animate
+      >
+        Como posso ajudar você e seu cão
+      </h2>
+      <p
+        class="mx-auto w-full max-w-[760px] font-sans text-[17.6px] font-medium leading-[24px] text-text-soft md:text-[19.2px] md:leading-[22.4px]"
+        data-animate
+      >
+        Cada cão tem uma personalidade única, e meu trabalho é adaptar o treinamento às<br
+          class="hidden md:inline"
+        />
+        necessidades dele e às suas expectativas como tutor.
+      </p>
+    </div>
+
+    <div class="mt-10 grid items-start gap-5 lg:grid-cols-[424.36fr_855.64fr]">
+      <div class="overflow-hidden rounded-[20px]" data-animate-left>
+        <Image
+          src={fotoPremio}
+          alt="Paulo Bernardo segurando o certificado de Melhores Profissionais da Cidade 2024"
+          class="h-full w-full object-cover"
+          width={759}
+          height={1024}
+        />
+      </div>
+
+      <!-- 401.09px é a largura do card no Figma; é o que faz os textos
+           quebrarem nas mesmas linhas do design. Os cards de cada linha
+           esticam para a mesma altura, como no design. -->
+      <div
+        class="grid gap-5 px-2.5 sm:grid-cols-[repeat(2,minmax(0,401.09px))]"
+        data-animate-group
+      >
+        {/* No mobile o card é centralizado com o ícone acima do título; a
+            partir de sm volta ao layout lateral do desktop. */}
+        {servicos.map((servico) => (
+          <article
+            class="card flex flex-col items-center gap-[15px] text-center sm:flex-row sm:items-start sm:text-left"
+            data-animate-item
+          >
+            <Image
+              src={servico.icon}
+              alt=""
+              aria-hidden="true"
+              class="h-[90px] w-[90px] shrink-0"
+              width={90}
+              height={90}
+            />
+            <div class="flex flex-col gap-[15.2px] sm:pt-[7px]">
+              <h3 class="font-serif text-[28.8px] font-bold uppercase leading-[34.56px] tracking-normal text-text-main">
+                {servico.titulo}
+              </h3>
+              <p class="font-sans text-[16px] font-medium leading-[19.2px] text-text-soft">
+                {servico.texto}
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

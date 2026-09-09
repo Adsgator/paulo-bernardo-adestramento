@@ -1,0 +1,160 @@
+---
+import { Image } from "astro:assets";
+import faqImg from "../../assets/images/faq-filhote.webp";
+
+const faqs = [
+  {
+    q: "Quanto tempo leva para o cão aprender?",
+    a: "Cada cão tem seu ritmo. Quando o tutor participa do processo e mantém os treinos, os resultados aparecem mais rápido do que se imagina.",
+  },
+  {
+    q: "Quais tipos de cães você atende?",
+    a: "Atendo cães de todas as idades e portes, adaptando o método conforme o temperamento e as necessidades de cada um.",
+  },
+  {
+    q: "É preciso comprar algum equipamento especial?",
+    a: "Não. Eu mesmo oriento tudo que for necessário para o conforto e segurança do seu cão.",
+  },
+  {
+    q: "As aulas são individuais ou em grupo?",
+    a: "Trabalho com aulas individuais, pensadas para o comportamento e a rotina do seu cão.",
+  },
+  {
+    q: "Quais são as formas de pagamento aceitas?",
+    a: "Aceito cartões de crédito e débito nas principais bandeiras, além de PIX e pagamentos em dinheiro.",
+  },
+];
+---
+
+<!-- O container desta seção no Figma tem 1090px (padding lateral de 415px em
+     1920), mais estreito que os 1300px das demais. -->
+<section id="faq" class="bg-surface-alt">
+  <div class="mx-auto w-full max-w-[1090px] px-5 pb-16 pt-12 md:pb-[120px] md:pt-20">
+    {/* No mobile: imagem no topo e todo o bloco centralizado. No desktop a
+        imagem passa para a coluna esquerda e o título alinha à esquerda. */}
+    <div class="flex flex-col items-center gap-5 lg:flex-row lg:items-center">
+      <div
+        class="flex w-full shrink-0 items-center justify-center p-2.5 lg:w-[453px]"
+        data-animate-left
+      >
+        <Image
+          src={faqImg}
+          alt="Filhote de cachorro sentado, olhando para a câmera"
+          class="h-auto w-full max-w-[290px]"
+          width={340}
+          height={420}
+        />
+      </div>
+
+      <div
+        class="flex w-full flex-col p-2.5 text-center lg:w-[597px] lg:text-left"
+        data-animate-right
+      >
+        <span
+          class="font-sans text-[19.2px] font-medium leading-[19.2px] tracking-[0.0667em] text-text-muted"
+          data-animate
+        >
+          F.A.Q
+        </span>
+        <h2
+          class="mt-5 font-serif text-[32px] font-extrabold uppercase leading-[1.15] tracking-[0.0083em] text-text-main md:text-[38.4px] md:leading-[47px]"
+          data-animate
+        >
+          Perguntas<br />frequentes
+        </h2>
+
+        {/* O accordion fica sempre à esquerda, mesmo com o título centrado. */}
+        <div class="mt-10 w-full text-left" data-animate-group>
+          {faqs.map((faq, i) => (
+            <div class="faq-item border-b-2 border-divider" data-animate-item>
+              <h3>
+                <button
+                  type="button"
+                  class="faq-trigger flex w-full items-center gap-2.5 p-2.5 text-left"
+                  aria-expanded="false"
+                  aria-controls={`faq-body-${i}`}
+                  id={`faq-trigger-${i}`}
+                >
+                  <span class="faq-caret flex h-[15px] shrink-0 items-center text-text-strong" aria-hidden="true">
+                    <svg width="10" height="7" viewBox="0 0 10 7" fill="currentColor">
+                      <path d="M0.6 1.2h8.8L5 6.2z" />
+                    </svg>
+                  </span>
+                  <span class="font-sans text-[17.6px] font-extrabold leading-[26px] text-text-strong md:text-[19.2px] md:leading-[28.8px]">
+                    {faq.q}
+                  </span>
+                </button>
+              </h3>
+              <div class="faq-body" id={`faq-body-${i}`} role="region" aria-labelledby={`faq-trigger-${i}`}>
+                <p class="px-2.5 pb-4 pl-[30px] font-sans text-[16px] leading-[24px] text-text-soft">
+                  {faq.a}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq-body {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .faq-item.is-open .faq-body {
+    max-height: 24rem;
+  }
+  /* A seta aponta para baixo e inverte ao abrir. */
+  .faq-caret svg {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .faq-item.is-open .faq-caret svg {
+    transform: rotate(180deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-body,
+    .faq-caret svg {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const itens = Array.from(document.querySelectorAll<HTMLElement>(".faq-item"));
+  // Cada item com o seu gatilho, já pareados: evita indexar duas listas.
+  const pares = itens
+    .map((item) => ({ item, gatilho: item.querySelector<HTMLButtonElement>(".faq-trigger") }))
+    .filter((p): p is { item: HTMLElement; gatilho: HTMLButtonElement } => p.gatilho !== null);
+
+  function abrir(item: HTMLElement, aberto: boolean) {
+    item.classList.toggle("is-open", aberto);
+    item.querySelector(".faq-trigger")?.setAttribute("aria-expanded", String(aberto));
+  }
+
+  pares.forEach(({ item, gatilho }, i) => {
+    gatilho.addEventListener("click", () => {
+      const jaAberto = item.classList.contains("is-open");
+      // Só um item aberto por vez.
+      for (const outro of pares) abrir(outro.item, false);
+      if (!jaAberto) abrir(item, true);
+    });
+
+    // Navegação por setas entre as perguntas, como espera um accordion.
+    gatilho.addEventListener("keydown", (e) => {
+      const destinos: Record<string, number> = {
+        ArrowDown: i + 1,
+        ArrowUp: i - 1,
+        Home: 0,
+        End: pares.length - 1,
+      };
+      const destino = destinos[e.key];
+      if (destino === undefined) return;
+      e.preventDefault();
+      pares[(destino + pares.length) % pares.length]?.gatilho.focus();
+    });
+  });
+</script>

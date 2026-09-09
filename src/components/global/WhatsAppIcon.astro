@@ -1,0 +1,16 @@
+---
+// Glifo do WhatsApp para usar dentro de botões/links.
+// Herda a cor via `currentColor` e o tamanho pela classe passada.
+// O desenho vem de `data/whatsapp-icon.ts`, compartilhado com a island
+// React do menu mobile (que não consegue importar um `.astro`).
+import { WHATSAPP_ICON_PATH } from "../../data/whatsapp-icon";
+
+interface Props {
+  class?: string;
+}
+const { class: className = "h-5 w-5" } = Astro.props;
+---
+
+<svg class={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+  <path fill-rule="evenodd" clip-rule="evenodd" d={WHATSAPP_ICON_PATH} />
+</svg>

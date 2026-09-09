@@ -1,0 +1,66 @@
+---
+// Botão flutuante de WhatsApp.
+//
+// Visível por padrão. Esconde quando o Hero OU o Footer estão na tela
+// (para não competir com os CTAs dessas seções). Se não houver
+// #hero-section nem #footer, fica sempre visível.
+//
+// O número e a mensagem vêm de .env (PUBLIC_WA_NUMBER / PUBLIC_WA_MESSAGE).
+// Formato do número: só dígitos com DDI, ex.: 5511999999999.
+
+import WhatsAppIcon from "./WhatsAppIcon.astro";
+
+const waNumber = import.meta.env.PUBLIC_WA_NUMBER || "SEUNUMERO";
+const waMessage =
+  import.meta.env.PUBLIC_WA_MESSAGE || "Olá! Vi seu site e gostaria de mais informações.";
+const WA_LINK = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+---
+
+<a
+  id="btn-whatsapp-float"
+  href={WA_LINK}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Falar pelo WhatsApp"
+  data-tracking="click-whatsapp-flutuante"
+  data-section="floating"
+  class="fixed bottom-6 right-6 z-50 w-14 h-14 bg-wa rounded-full flex items-center justify-center shadow-float hover:scale-110 transition-all duration-200 opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wa"
+>
+  <WhatsAppIcon class="h-[26px] w-[26px] text-white" />
+</a>
+
+<script is:inline>
+  (function () {
+    var btn = document.getElementById('btn-whatsapp-float');
+    if (!btn) return;
+
+    var hero = document.getElementById('hero-section');
+    var footer = document.getElementById('footer');
+
+    var heroVisible = false;
+    var footerVisible = false;
+
+    function update() {
+      var hide = heroVisible || footerVisible;
+      btn.classList.toggle('opacity-0', hide);
+      btn.classList.toggle('pointer-events-none', hide);
+      btn.classList.toggle('opacity-100', !hide);
+    }
+
+    if (hero) {
+      new IntersectionObserver(function (entries) {
+        heroVisible = entries[0].isIntersecting;
+        update();
+      }, { threshold: 0.1 }).observe(hero);
+    }
+
+    if (footer) {
+      new IntersectionObserver(function (entries) {
+        footerVisible = entries[0].isIntersecting;
+        update();
+      }, { threshold: 0.1 }).observe(footer);
+    }
+
+    update();
+  })();
+</script>

@@ -1,0 +1,115 @@
+---
+import { Image } from "astro:assets";
+import heroMobile from "../../assets/images/hero-paulo-mobile.webp";
+import heroDesktop from "../../assets/images/hero-paulo.webp";
+import WhatsAppIcon from "../global/WhatsAppIcon.astro";
+
+const WA_NUMBER = import.meta.env.PUBLIC_WA_NUMBER || "";
+const WA_MESSAGE =
+  import.meta.env.PUBLIC_WA_MESSAGE ||
+  "Olá! Vi o site e gostaria de saber mais sobre o adestramento.";
+const WA_LINK = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MESSAGE)}`;
+---
+
+<section id="hero-section" class="relative isolate overflow-hidden bg-background">
+  <!-- No mobile o frame do hero mede 390x820 no Figma (node 1817:5) —
+       proporção 2.1028, ou 210.3vw. A arte é o fill do frame, com um
+       imageTransform que descarta ~5,9% do topo: por isso object-cover com
+       object-top, e não object-fill (que deformaria a arte). -->
+  <div class="relative max-md:h-[210.3vw]">
+    <!-- A arte do hero já vem do Figma com o parque desbotado e o degradê
+         branco embutidos: nada de gradiente extra por cima. No desktop ela é
+         esticada (100% x 100%) como no design; no mobile usa a versão
+         vertical, que reserva o topo vazio para o texto — imagem e texto
+         formam um bloco só, sem separação visível. -->
+    <Image
+      src={heroMobile}
+      alt="Paulo Bernardo passeando com três cães em um parque"
+      class="absolute inset-0 -z-10 h-full w-full object-cover object-top md:hidden"
+      width={600}
+      height={1341}
+      loading="eager"
+    />
+    <Image
+      src={heroDesktop}
+      alt="Paulo Bernardo passeando com três cães em um parque"
+      class="absolute inset-0 -z-10 hidden h-full w-full md:block"
+      style="object-fit: fill;"
+      width={1920}
+      height={620}
+      loading="eager"
+    />
+
+    <!-- 620px é a altura da arte do hero no desktop. No mobile o texto começa
+         42px abaixo do topo do frame (Figma 1817:10) e o conteúdo usa as
+         laterais de 10px do container de 390. -->
+    <div class="container-wide relative flex h-full flex-col max-md:w-full max-md:px-2.5 max-md:pt-[42px] md:h-auto md:min-h-[620px] md:pb-[120px] md:pt-[80px]">
+      <div class="flex max-w-3xl flex-col gap-[19.2px] md:p-2.5" data-animate>
+        <!-- No Figma o vão entre a pill e o H1 é maior (52px) que o dos demais
+             blocos (19.2px): daí o mb extra só no mobile. -->
+        <span
+          class="flex w-[310px] max-w-full justify-center rounded-full bg-text-muted p-[5px] font-sans text-[16px] leading-[22.4px] tracking-[0.08em] text-secondary max-md:mb-[33px]"
+        >
+          São José dos Campos e Região
+        </span>
+
+        <!-- 40px/40px nos dois breakpoints (Figma: 1817:15 no mobile). A
+             quebra depois de "desobediente?" é só do desktop; no mobile o
+             texto flui sozinho em 4 linhas dentro dos 370px da coluna. -->
+        <h1
+          class="max-w-[370px] font-serif text-[40px] font-extrabold uppercase leading-none text-text-main md:max-w-none md:text-[clamp(2rem,3.6vw,40px)]"
+        >
+          Seu cão está agitado ou desobediente?<br class="hidden md:inline" />
+          Eu posso te ajudar a mudar isso.
+        </h1>
+
+        <!-- No mobile a coluna tem 333px e o texto quebra em 4 linhas
+             (Figma 1817:19); no desktop são 3 linhas com <br> explícitos. -->
+        <p class="max-w-[333px] font-sans text-[19.2px] leading-[19.2px] text-text-soft md:max-w-[458.8px]">
+          Com mais de 15 anos de experiência, ajudo cães e<br class="hidden md:inline" />
+          tutores a viverem em harmonia, com respeito,<br class="hidden md:inline" />
+          cuidado e técnicas eficazes.
+        </p>
+
+        <a
+          href={WA_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-primary gap-[12px] self-start px-[30px] py-[10px] text-[16px] font-medium leading-none max-md:h-[43px] max-md:w-[292px] max-md:max-w-full md:text-[17.6px]"
+          data-tracking="whatsapp-hero"
+          data-section="hero"
+        >
+          <WhatsAppIcon class="h-5 w-5 shrink-0 md:h-[25px] md:w-[25px]" />
+          <span class="whitespace-nowrap">Fale agora pelo WhatsApp!</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bloco de dois textos que sobrepõe o fim do Hero e o início dos Serviços.
+       No Figma tem 930px de largura, barra amarela de 6px no topo e 1px na
+       base, e duas colunas de mesma largura separadas por 50px. Os paddings
+       quebrados vêm do design e alinham as duas colunas de texto entre si.
+
+       No mobile a banda tem 370px dentro de 390 (padding lateral de 10px) e
+       encosta no fim do hero, subindo 10px sobre ele (Figma 1817:523). -->
+  <div class="relative px-2.5 py-2.5 max-md:-mt-5 md:-mt-[70px] md:px-[5%]" data-animate>
+    <div class="band-yellow mx-auto flex max-w-[930px] flex-col gap-0 p-5 md:flex-row md:gap-[50px]">
+      <div class="flex flex-1 items-center p-2.5 md:pb-[23.22px] md:pt-[22.61px]">
+        <p class="font-sans text-[17.6px] font-medium leading-[26.4px] text-text-soft md:pr-[7.61px]">
+          Trabalho com métodos que reduzem a<br class="hidden md:inline" />
+          ansiedade,<br class="hidden md:inline" />
+          corrigem comportamentos indesejados e tornam<br class="hidden md:inline" />
+          seu cão mais calmo e equilibrado.
+        </p>
+      </div>
+      <div class="flex flex-1 items-center p-2.5 md:pb-2.5 md:pt-[9.205px]">
+        <p class="font-serif text-[32px] font-bold uppercase leading-[35.2px] text-text-main md:pr-[15.19px]">
+          O resultado é uma convivência<br class="hidden md:inline" />
+          mais tranquila para toda a<br class="hidden md:inline" />
+          família.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

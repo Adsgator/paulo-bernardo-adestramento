@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<!--
+  TEMPLATE — Painel da Campanha Google Ads (Adsgator)
+  ===================================================
+  Este é o modelo padrão. Para gerar o painel de um cliente:
+  1. Copie este arquivo para a RAIZ do projeto do cliente como `painel-campanha.html`.
+  2. Preencha o objeto `DATA` no <script> com os dados reais (grupos, títulos, extensões, etc.).
+  3. Atualize o <title> e o bloco <header> (nome do cliente, landing, conversão, orçamento).
+  4. DATA.campaignName segue a convenção Adsgator:
+     [ATV|DSV] [TIPO] [V1] [OPCIONAL] [C:DD/MM/AA] - Objetivo
+     ATV/DSV = campanha ativa/desativada · TIPO = ex. PESQUISA · V1 = versão ·
+     OPCIONAL = diferenciador (ex. PRESENCIAL vs online) só quando fizer sentido ·
+     C:DD/MM/AA = data de criação (use A:DD/MM/AA em atualizações depois) ·
+     Objetivo = a ação de conversão, ex. "Mensagem WhatsApp".
+  Não mexa no CSS nem nas funções de render — só no objeto DATA e no header.
+  O arquivo é LOCAL: não fica em src/pages nem public, então nunca vai pro ar.
+  (Os dados abaixo são um EXEMPLO genérico só para visualização.)
+-->
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Painel da Campanha — {{CLIENTE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --g-blue: #1a73e8;
+    --g-blue-dark: #1765cc;
+    --g-blue-tint: #e8f0fe;
+    --g-text: #202124;
+    --g-text-soft: #5f6368;
+    --g-bg: #f8f9fa;
+    --g-surface: #ffffff;
+    --g-chip: #f1f3f4;
+    --g-border: #dadce0;
+    --g-green: #1e8e3e;
+    --g-green-tint: #e6f4ea;
+    --g-red: #d93025;
+    --g-red-tint: #fce8e6;
+    --g-amber: #e37400;
+    --g-amber-tint: #fef7e0;
+    --g-yellow: #fbbc04;
+    --g-greenbar: #34a853;
+    --g-redbar: #ea4335;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Roboto', system-ui, Arial, sans-serif;
+    background: var(--g-bg);
+    color: var(--g-text);
+    line-height: 1.5;
+    padding: 0 0 80px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  header {
+    background: var(--g-surface);
+    border-bottom: 1px solid var(--g-border);
+    padding: 22px 0 20px;
+  }
+  header .bar { height: 4px; display: flex; }
+  header .bar i { flex: 1; }
+  header .bar i:nth-child(1){ background: var(--g-blue); }
+  header .bar i:nth-child(2){ background: var(--g-redbar); }
+  header .bar i:nth-child(3){ background: var(--g-yellow); }
+  header .bar i:nth-child(4){ background: var(--g-greenbar); }
+  header h1 { font-size: 1.5rem; font-weight: 500; letter-spacing: -.2px; display: flex; align-items: center; gap: 10px; }
+  header h1 .ads-dot {
+    width: 22px; height: 22px; border-radius: 50%; background: var(--g-blue);
+    display: inline-flex; align-items: center; justify-content: center; color: #fff;
+    font-size: .8rem; font-weight: 700;
+  }
+  header .sub { color: var(--g-text-soft); margin-top: 4px; font-size: .9rem; }
+  header .meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  header .pill {
+    background: var(--g-chip); border: 1px solid var(--g-border);
+    border-radius: 8px; padding: 6px 12px; font-size: .8rem; color: var(--g-text);
+  }
+  header .pill b { color: var(--g-blue); font-weight: 500; }
+  .header-actions { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-md {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--g-blue); color: #fff; border: none; border-radius: 8px;
+    padding: 10px 18px; font-size: .86rem; font-weight: 500; cursor: pointer;
+    font-family: inherit; transition: background .12s; box-shadow: 0 1px 2px rgba(60,64,67,.2);
+  }
+  .btn-md:hover { background: var(--g-blue-dark); }
+  .btn-md svg { width: 16px; height: 16px; }
+  .btn-md.btn-outline { background: transparent; color: var(--g-blue); border: 1px solid var(--g-border); box-shadow: none; }
+  .btn-md.btn-outline:hover { background: var(--g-blue-tint); border-color: var(--g-blue); }
+
+  .local-banner {
+    background: var(--g-amber-tint); border: 1px solid #fce8b2; color: #7a4f00;
+    border-radius: 8px; padding: 12px 16px; font-size: .84rem; margin: 22px 0 4px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+
+  nav.toc {
+    position: sticky; top: 0; z-index: 20; background: var(--g-bg);
+    border-bottom: 1px solid var(--g-border); padding: 10px 0; margin-bottom: 8px;
+  }
+  nav.toc .wrap { display: flex; gap: 8px; flex-wrap: wrap; }
+  nav.toc a {
+    font-size: .8rem; text-decoration: none; color: var(--g-text-soft);
+    background: var(--g-surface); border: 1px solid var(--g-border); border-radius: 100px;
+    padding: 6px 14px; transition: all .15s; font-weight: 500;
+  }
+  nav.toc a:hover { background: var(--g-blue-tint); border-color: var(--g-blue); color: var(--g-blue-dark); }
+
+  section { margin-top: 36px; }
+  .sec-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+  .sec-head h2 { font-size: 1.3rem; font-weight: 500; color: var(--g-text); }
+  .sec-head .tag {
+    font-size: .68rem; text-transform: uppercase; letter-spacing: .08em;
+    color: var(--g-blue); font-weight: 700;
+  }
+
+  .card {
+    background: var(--g-surface); border: 1px solid var(--g-border);
+    border-radius: 8px; padding: 22px; margin-bottom: 16px;
+    box-shadow: 0 1px 2px rgba(60,64,67,.08), 0 1px 3px rgba(60,64,67,.06);
+  }
+  .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; cursor: pointer; user-select: none; }
+  .card-head .chevron { width: 20px; height: 20px; color: var(--g-text-soft); flex-shrink: 0; margin-top: 2px; transition: transform .2s ease; }
+  .card-head:hover .chevron { color: var(--g-blue); }
+  .card.collapsed .card-head .chevron { transform: rotate(-90deg); }
+  .card.collapsed .card-body { display: none; }
+  .card-body { margin-top: 14px; }
+  .group-title, .card-title { font-size: 1.05rem; font-weight: 500; color: var(--g-text); margin-bottom: 3px; }
+  .group-sub { font-size: .82rem; color: var(--g-text-soft); }
+  .group-title.copy-title { cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: color .12s; }
+  .group-title.copy-title .ico { width: 14px; height: 14px; color: var(--g-text-soft); flex-shrink: 0; transition: color .12s; }
+  .group-title.copy-title:hover, .group-title.copy-title:hover .ico { color: var(--g-blue); }
+
+  .block { margin-top: 18px; }
+  .block:first-child { margin-top: 0; }
+  .block-label {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: .72rem; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--g-text-soft); font-weight: 700; margin-bottom: 8px;
+  }
+
+  .chips { display: flex; flex-direction: column; gap: 6px; }
+  .chip {
+    display: flex; align-items: center; gap: 10px; cursor: pointer;
+    background: var(--g-chip); border: 1px solid transparent;
+    border-radius: 8px; padding: 9px 12px; transition: all .12s; user-select: none;
+  }
+  .chip:hover { border-color: var(--g-blue); background: var(--g-blue-tint); }
+  .chip .txt { flex: 1; font-size: .9rem; }
+  .chip .count {
+    font-size: .7rem; font-variant-numeric: tabular-nums; color: var(--g-green);
+    background: var(--g-green-tint); border-radius: 100px; padding: 2px 9px; font-weight: 700;
+  }
+  .chip .count.over { color: #fff; background: var(--g-red); }
+  .chip .ico { width: 15px; height: 15px; color: var(--g-text-soft); flex-shrink: 0; }
+  .chip:hover .ico { color: var(--g-blue); }
+  .chip.copied { border-color: var(--g-green); background: var(--g-green-tint); }
+
+  .kw { font-family: 'Roboto Mono', ui-monospace, monospace; font-size: .84rem; }
+
+  .copy-all {
+    font-size: .74rem; color: var(--g-blue); background: transparent;
+    border: 1px solid var(--g-border); border-radius: 100px; padding: 5px 14px; cursor: pointer;
+    font-weight: 500; transition: all .12s; font-family: inherit;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .copy-all:hover { background: var(--g-blue); color: #fff; border-color: var(--g-blue); }
+
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  table td { padding: 10px 4px; border-bottom: 1px solid #eceff1; vertical-align: top; }
+  table tr:last-child td { border-bottom: none; }
+  table td:first-child { color: var(--g-text-soft); width: 34%; font-weight: 500; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+
+  .sitelink-row { border-left: 3px solid var(--g-blue); padding-left: 12px; margin-bottom: 14px; }
+
+  .note { font-size: .86rem; color: var(--g-text-soft); padding: 8px 0; border-bottom: 1px solid #eceff1; }
+  .note:last-child { border: none; }
+  .note b { color: var(--g-text); font-weight: 500; }
+
+  .steps-list { padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: .88rem; color: var(--g-text); }
+  .steps-list li { padding-left: 4px; }
+
+  #toast {
+    position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(120px);
+    background: var(--g-text); color: #fff; padding: 12px 22px; border-radius: 8px;
+    font-size: .88rem; box-shadow: 0 8px 24px rgba(0,0,0,.25); transition: transform .3s; z-index: 50;
+    display: flex; align-items: center; gap: 8px;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+  #toast .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--g-greenbar); }
+
+  .hint { font-size: .8rem; color: var(--g-text-soft); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar"><i></i><i></i><i></i><i></i></div>
+  <div class="wrap" style="margin-top:18px;">
+    <h1><span class="ads-dot">A</span> Campanha Google Ads — {{CLIENTE}}</h1>
+    <div class="sub">{{SEGMENTO}} · documento operacional para montar a campanha</div>
+    <div class="meta">
+      <span class="pill"><b>Landing:</b> {{URL_SEM_HTTPS}}</span>
+      <span class="pill"><b>Conversão:</b> {{NOME_CONVERSAO}}</span>
+      <span class="pill"><b>Orçamento:</b> {{ORCAMENTO}}</span>
+    </div>
+    <div class="header-actions">
+      <button id="copy-md" class="btn-md">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copiar tudo como Markdown
+      </button>
+      <button id="toggle-all" class="btn-md btn-outline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9l4-4 4 4M8 15l4 4 4-4"/></svg>
+        <span id="toggle-all-label">Expandir tudo</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="local-banner">
+    <span>🔒</span>
+    <span><b>Arquivo local.</b> Esta página não faz parte do site publicado e não vai pro ar.
+    Clique em qualquer item para copiar; use “copiar lista” para pegar o bloco inteiro. Os números
+    verdes mostram a contagem de caracteres dentro do limite do Google Ads (vermelho = estourou).</span>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="wrap" id="toc"></div>
+</nav>
+
+<main class="wrap" id="app"></main>
+
+<div id="toast"><span class="dot"></span><span id="toast-msg">Copiado!</span></div>
+
+<script>
+const LIMITS = { headline: 30, description: 90, sitelinkText: 25, sitelinkDesc: 35, callout: 25, snippet: 25, priceTitle: 25, priceDesc: 25 };
+
+/* ===========================================================================
+   PREENCHA APENAS ESTE OBJETO com os dados reais do cliente.
+   (Os valores abaixo são um EXEMPLO genérico só para visualizar o layout.)
+   =========================================================================== */
+const DATA = {
+  campaignName: "[ATV] [PESQUISA] [V1] [C:00/00/00] - Objetivo da campanha",
+  config: [
+    ["Tipo de campanha", "Pesquisa (Search)"],
+    ["Objetivo", "Leads — foco em conversão"],
+    ["Conversão", "{{NOME_CONVERSAO}}"],
+    ["Estratégia de lance", "Maximizar cliques com CPC máx. limitado → depois Maximizar conversões"],
+    ["Orçamento", "{{ORCAMENTO}}"],
+    ["Redes", "Somente Pesquisa (sem Display / parceiros)"],
+    ["Idioma", "Português"],
+    ["Opção de local", "Presença: pessoas que ESTÃO nos locais (não 'interesse')"],
+    ["Dispositivos", "Todos (maioria mobile)"],
+    ["Programação de anúncios", "Seg–Sex, 9h às 19h"],
+  ],
+  url: "https://exemplo.com.br/online",
+  geoNote: "Recomende um Tier 1 estreito (CPC baixo + afinidade) e abra conforme converter.",
+  geo: ["Cidade A, UF","Cidade B, UF","Cidade C, UF"],
+  conversion: {
+    containerPath: "G:\\Meu Drive\\ADSGATOR\\GOOGLE\\GOOGLE TAG MANAGER\\GTM-EXEMPLO-GADS-CONFIGURADO.json",
+    actions: [
+      { name: "contato_wpp", tipo: "Contato", meta: "Meta principal", trigger: "Clique em qualquer link do WhatsApp — evento contato_wpp no dataLayer. Confirme que o site do cliente dispara esse evento (listener por href wa.me, ver projeto-base)." },
+      { name: "view_content", tipo: "Página vista", meta: "Meta secundária", trigger: "Toda visualização de página — a tag dispara no acionador All Pages do container, não depende de evento do site." },
+    ],
+    steps: [
+      "Crie/abra o workspace do GTM da conta nova do cliente e importe o container padrão (arquivo acima).",
+      "No Google Ads: Conversões → Nova conversão → Contato → nome \"contato_wpp\", contagem \"Uma\" (um lead por clique, não \"Todas\") e janela de conversão de 30 dias. Copie o Conversion ID e o Rótulo e cole na tag \"contato_wpp\" no GTM.",
+      "No Google Ads: Conversões → Nova conversão → Página vista → nome \"view_content\" → marque como meta secundária. Copie o Conversion ID e o Rótulo e cole na tag \"view_content\" no GTM.",
+      "Crie/abra a propriedade GA4 do cliente, pegue o ID (G-XXXXXXX) e cole na tag \"Tag GA4\" e no measurementIdOverride da tag \"generate_lead\".",
+      "Pegue a tag do Google Ads (AW-XXXXXXXXX) e cole na tag \"Tag do Google Ads\".",
+      "Confirme que a marcação automática (auto-tagging) está ativa em Configurações da conta — sem gclid o Vinculador de conversões não atribui nada.",
+      "Publique o container e confira no Preview do GTM antes de ativar a campanha.",
+    ],
+  },
+  groups: [
+    {
+      name: "Grupo 1 — Tema Principal",
+      sub: "Intenção central do serviço.",
+      keywords: ['"palavra principal"','[palavra principal]','"variação da palavra"'],
+      headlines: ["Título Exemplo 1","Título Exemplo 2","Atendimento Online","Fale no WhatsApp","Sem Enrolação","Atendo Todo o Brasil","Serviço Sob Medida","Cuidado de Verdade","No Seu Ritmo","Resultados Reais","Consulta por Vídeo","Profissional Real","Qualidade no Atendimento","Agende Agora","A Mesma Atenção de Sempre"],
+      descriptions: ["Descrição de exemplo respeitando o limite de noventa caracteres por linha aqui.","Segunda descrição de exemplo, clara e direta, com chamada para ação no fim. Fale.","Terceira variação de descrição, destacando um diferencial real do serviço.","Quarta descrição, reforçando confiança e conexão com a chamada final."],
+    },
+    {
+      name: "Grupo 2 — Segundo Tema",
+      sub: "Outra intenção de busca relacionada.",
+      keywords: ['"segundo tema online"','"segundo tema particular"'],
+      headlines: ["Segundo Tema Online","Atendimento Particular","Fale no WhatsApp","Sob Medida pra Você","Sem Restrições","Atendo Todo o Brasil","No Seu Ritmo","Cuidado Humanizado","Consulta por Vídeo","Resultados com Equilíbrio","Profissional Dedicada","Agende sua Conversa","Comece Hoje","Qualidade de Verdade","Atenção Real"],
+      descriptions: ["Descrição do segundo grupo, dentro do limite, com chamada para ação ao final.","Variação destacando comodidade e alcance do atendimento online. Fale agora.","Reforço de diferencial e proximidade, mesmo à distância, no seu ritmo.","Última descrição com convite direto para o contato pelo WhatsApp."],
+    },
+  ],
+  sitelinks: [
+    { title: "Como Funciona", d1: "Passo a passo do atendimento", d2: "Simples e sem enrolação", url: "https://exemplo.com.br/online#como-funciona" },
+    { title: "Sobre", d1: "Conheça o profissional", d2: "A abordagem do trabalho", url: "https://exemplo.com.br/online#sobre" },
+    { title: "Dúvidas Frequentes", d1: "Respostas pras dúvidas comuns", d2: "Antes de começar", url: "https://exemplo.com.br/online#faq" },
+    { title: "Falar no WhatsApp", d1: "Fale com a gente agora", d2: "Tire todas as dúvidas", url: "https://exemplo.com.br/online" },
+  ],
+  callouts: ["Atende todo o Brasil","Atendimento online","Sob medida pra você","Consulta por vídeo","Cuidado humanizado","Atendimento particular"],
+  snippetsHeader: "Serviços",
+  snippets: ["Serviço A","Serviço B","Serviço C","Serviço D"],
+  call: "(00) 00000-0000",
+  prices: {
+    note: "Extensão de preço — tipo \"Serviços\", moeda BRL. Título ≤25 e descrição ≤25 caracteres. Use quando a LP mostra preços públicos (qualifica o clique antes de pagar por ele). Mínimo 3 itens.",
+    items: [
+      { title: "Serviço A", price: "R$ 100", desc: "Descrição curta", url: "https://exemplo.com.br/#precos" },
+      { title: "Serviço B", price: "R$ 200", desc: "Descrição curta", url: "https://exemplo.com.br/#precos" },
+      { title: "Serviço C", price: "R$ 300", desc: "Descrição curta", url: "https://exemplo.com.br/#precos" },
+    ],
+  },
+  negatives: ["grátis","gratis","curso","cursos","faculdade","emprego","vaga","salário","salario","download","pdf","apostila"],
+  notes: [
+    ["Match types","Comece com frase (\"...\") e exata ([...]). Evite ampla pura com verba baixa."],
+    ["RSA / pin","Não fixe tudo. No máximo 1-2 títulos."],
+    ["Lance","2-3 semanas em Maximizar cliques (CPC limitado), depois Maximizar conversões."],
+    ["Leitura","Olhe custo por conversão, não CPC isolado."],
+    ["Expansão","Abra cidades uma por vez, conforme provar barato + convertendo."],
+    ["Localização","SEM extensão de Localização se o serviço for online."],
+    ["Consent Mode (LGPD)","Se o site usa banner de consentimento, quem recusa cookies não vira conversão registrada — espere o painel mostrar menos leads do que o WhatsApp recebe."],
+  ],
+  checklist: [
+    "Landing no ar com SSL e todos os CTAs de WhatsApp funcionando.",
+    "Container GTM importado, IDs e rótulos preenchidos, container PUBLICADO (não só salvo).",
+    "Conversões contato_wpp (meta principal) e view_content (meta secundária) criadas no Google Ads.",
+    "Propriedade GA4 criada e vinculada à conta do Google Ads.",
+    "Preview do GTM: clique num CTA de WhatsApp dispara contato_wpp.",
+    "Marcação automática (auto-tagging) ativa nas configurações da conta.",
+    "Forma de pagamento e faturamento configurados na conta.",
+    "Campanha nomeada na convenção e orçamento diário conferido.",
+    "Programação de anúncios configurada espelhando o horário de atendimento.",
+    "Extensões anexadas no nível da campanha.",
+  ],
+  routine: [
+    ["Primeiras 48h","Confira se anúncios e palavras foram aprovados e se há gasto acontecendo. Reprovação silenciosa é a causa nº 1 de campanha parada."],
+    ["Semanal (2 primeiras semanas)","Relatório de termos de pesquisa → adicione como negativa tudo que não tem intenção de contratar."],
+    ["Quinzenal","Compare custo/conversão entre os grupos. Pause palavra com muitas impressões e CTR abaixo de ~1%."],
+    ["Semana 3-4","Com ~15 conversões acumuladas em 30 dias, migre para Maximizar conversões. Sem esse volume, mantenha CPC limitado e ajuste o teto."],
+    ["Mensal","Revise a campanha; se mexer na estrutura, atualize o nome com [A:DD/MM/AA]."],
+  ],
+};
+/* === FIM DO OBJETO A PREENCHER === */
+
+/* ---------- helpers (não precisa mexer) ---------- */
+function toast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window.__tt);
+  window.__tt = setTimeout(() => t.classList.remove('show'), 1400);
+}
+function copy(text, label) {
+  navigator.clipboard.writeText(text).then(() => toast((label || 'Copiado') + ' ✓'));
+}
+const COPY_ICO = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+const CHEVRON_ICO = '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+
+/* Card colapsável: clique no cabeçalho fecha só aquele card. */
+function cardEl(titleHtml) {
+  const card = document.createElement('div');
+  card.className = 'card collapsed';
+  const head = document.createElement('div');
+  head.className = 'card-head';
+  head.innerHTML = `<div class="card-head-text">${titleHtml}</div>${CHEVRON_ICO}`;
+  const titleEl = head.querySelector('h3.group-title');
+  if (titleEl) {
+    titleEl.classList.add('copy-title');
+    titleEl.insertAdjacentHTML('beforeend', ' ' + COPY_ICO);
+    titleEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      copy(titleEl.textContent.trim(), 'Nome copiado');
+    });
+  }
+  head.addEventListener('click', () => card.classList.toggle('collapsed'));
+  const body = document.createElement('div');
+  body.className = 'card-body';
+  card.appendChild(head);
+  card.appendChild(body);
+  return { card, body };
+}
+
+function escapeHtml(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function chip(text, { mono = false, limit = null } = {}) {
+  const el = document.createElement('div');
+  el.className = 'chip';
+  let countHtml = '';
+  if (limit) {
+    const over = text.length > limit;
+    countHtml = `<span class="count ${over ? 'over' : ''}">${text.length}/${limit}</span>`;
+  }
+  el.innerHTML = `<span class="txt ${mono ? 'kw' : ''}">${escapeHtml(text)}</span>${countHtml}${COPY_ICO}`;
+  el.addEventListener('click', () => {
+    copy(text);
+    el.classList.add('copied');
+    setTimeout(() => el.classList.remove('copied'), 600);
+  });
+  return el;
+}
+
+function block(label, items, opts = {}) {
+  const wrap = document.createElement('div');
+  wrap.className = 'block';
+  const head = document.createElement('div');
+  head.className = 'block-label';
+  head.innerHTML = `<span>${label}</span>`;
+  const btn = document.createElement('button');
+  btn.className = 'copy-all';
+  btn.innerHTML = COPY_ICO + 'copiar lista';
+  btn.addEventListener('click', () => copy(items.join('\n'), label + ' (lista)'));
+  head.appendChild(btn);
+  wrap.appendChild(head);
+  const chips = document.createElement('div');
+  chips.className = 'chips';
+  items.forEach(it => chips.appendChild(chip(it, opts)));
+  wrap.appendChild(chips);
+  return wrap;
+}
+
+function section(id, tag, title) {
+  const s = document.createElement('section');
+  s.id = id;
+  s.innerHTML = `<div class="sec-head"><span class="tag">${tag}</span><h2>${title}</h2></div>`;
+  return s;
+}
+
+/* ---------- build ---------- */
+const app = document.getElementById('app');
+const toc = document.getElementById('toc');
+const tocItems = [];
+function addToc(id, label){ tocItems.push(`<a href="#${id}">${label}</a>`); }
+
+{
+  const s = section('config', 'Setup', 'Configurações da campanha');
+  addToc('config','Configurações');
+  const { card, body } = cardEl('<span class="card-title">Configurações, URL e locais-alvo</span>');
+  body.appendChild(block('Nome da campanha', [DATA.campaignName], { mono: true }));
+  const tbl = document.createElement('table');
+  DATA.config.forEach(([k,v]) => { const tr = document.createElement('tr'); tr.innerHTML = `<td>${k}</td><td>${v}</td>`; tbl.appendChild(tr); });
+  body.appendChild(tbl);
+  body.appendChild(block('URL final (todos os grupos)', [DATA.url], { mono: true }));
+  body.appendChild(block('Locais-alvo (Tier 1)', DATA.geo));
+  const hint = document.createElement('div'); hint.className = 'hint'; hint.textContent = DATA.geoNote;
+  body.appendChild(hint);
+  s.appendChild(card); app.appendChild(s);
+}
+
+{
+  const s = section('conversao', 'Tracking', 'Conversões (GTM + Google Ads)');
+  addToc('conversao','Conversões');
+  const { card, body } = cardEl('<span class="card-title">Setup de conversão</span>');
+  body.appendChild(block('Container GTM padrão (importar)', [DATA.conversion.containerPath], { mono: true }));
+  body.appendChild(block('Nomes das conversões (copiar ao criar no Google Ads)', DATA.conversion.actions.map(a => a.name), { mono: true }));
+  DATA.conversion.actions.forEach(a => {
+    const row = document.createElement('div'); row.className = 'note';
+    row.innerHTML = `<b>${a.name} (${a.tipo} — ${a.meta}):</b> ${a.trigger}`;
+    body.appendChild(row);
+  });
+  const stepsWrap = document.createElement('div'); stepsWrap.className = 'block';
+  const stepsLabel = document.createElement('div'); stepsLabel.className = 'block-label'; stepsLabel.innerHTML = '<span>Passo a passo</span>';
+  stepsWrap.appendChild(stepsLabel);
+  const ol = document.createElement('ol'); ol.className = 'steps-list';
+  DATA.conversion.steps.forEach(st => { const li = document.createElement('li'); li.textContent = st; ol.appendChild(li); });
+  stepsWrap.appendChild(ol);
+  body.appendChild(stepsWrap);
+  s.appendChild(card); app.appendChild(s);
+}
+
+{
+  const s = section('grupos', 'Anúncios', 'Grupos de anúncios');
+  addToc('grupos','Grupos');
+  DATA.groups.forEach(g => {
+    const { card, body } = cardEl(`<h3 class="group-title">${g.name}</h3><div class="group-sub">${g.sub}</div>`);
+    body.appendChild(block('Palavras-chave', g.keywords, { mono: true }));
+    body.appendChild(block('Títulos (15) — máx. 30 caracteres', g.headlines, { limit: LIMITS.headline }));
+    body.appendChild(block('Descrições (4) — máx. 90 caracteres', g.descriptions, { limit: LIMITS.description }));
+    s.appendChild(card);
+  });
+  app.appendChild(s);
+}
+
+{
+  const s = section('extensoes', 'Recursos', 'Extensões (campanha toda)');
+  addToc('extensoes','Extensões');
+  const { card: slCard, body: slBody } = cardEl('<h3 class="group-title">Sitelinks</h3><div class="group-sub">Clique no título, nas descrições ou na URL para copiar.</div>');
+  DATA.sitelinks.forEach(sl => {
+    const row = document.createElement('div'); row.className = 'sitelink-row';
+    row.appendChild(chip(sl.title, { limit: LIMITS.sitelinkText }));
+    const d = document.createElement('div'); d.className = 'chips'; d.style.marginTop = '6px';
+    d.appendChild(chip(sl.d1, { limit: LIMITS.sitelinkDesc }));
+    d.appendChild(chip(sl.d2, { limit: LIMITS.sitelinkDesc }));
+    d.appendChild(chip(sl.url, { mono: true }));
+    row.appendChild(d);
+    slBody.appendChild(row);
+  });
+  s.appendChild(slCard);
+
+  const grid = document.createElement('div'); grid.className = 'grid2';
+  const { card: cCard, body: cBody } = cardEl('<span class="card-title">Frases de destaque (Callouts)</span>');
+  cBody.appendChild(block('Máx. 25 caracteres', DATA.callouts, { limit: LIMITS.callout }));
+  grid.appendChild(cCard);
+  const { card: snCard, body: snBody } = cardEl('<span class="card-title">Snippets e chamada</span>');
+  snBody.appendChild(block('Cabeçalho: ' + DATA.snippetsHeader + ' — máx. 25', DATA.snippets, { limit: LIMITS.snippet }));
+  snBody.appendChild(block('Extensão de chamada (opcional)', [DATA.call], { mono: true }));
+  grid.appendChild(snCard);
+  s.appendChild(grid);
+
+  const { card: prCard, body: prBody } = cardEl('<h3 class="group-title">Extensão de preço</h3><div class="group-sub">' + DATA.prices.note + '</div>');
+  DATA.prices.items.forEach(p => {
+    const row = document.createElement('div'); row.className = 'sitelink-row';
+    row.appendChild(chip(p.title, { limit: LIMITS.priceTitle }));
+    const d = document.createElement('div'); d.className = 'chips'; d.style.marginTop = '6px';
+    d.appendChild(chip(p.price, { mono: true }));
+    d.appendChild(chip(p.desc, { limit: LIMITS.priceDesc }));
+    d.appendChild(chip(p.url, { mono: true }));
+    row.appendChild(d);
+    prBody.appendChild(row);
+  });
+  s.appendChild(prCard);
+  app.appendChild(s);
+}
+
+{
+  const s = section('negativas', 'Filtro', 'Palavras-chave negativas');
+  addToc('negativas','Negativas');
+  const { card, body } = cardEl('<span class="card-title">Negativas (nível campanha)</span>');
+  body.appendChild(block('Lista completa', DATA.negatives, { mono: true }));
+  s.appendChild(card); app.appendChild(s);
+}
+
+{
+  const s = section('notas', 'Operação', 'Checklist, notas e rotina');
+  addToc('notas','Operação');
+
+  const { card: ckCard, body: ckBody } = cardEl('<span class="card-title">Checklist pré-lançamento</span>');
+  const ol = document.createElement('ol'); ol.className = 'steps-list';
+  DATA.checklist.forEach(item => { const li = document.createElement('li'); li.textContent = item; ol.appendChild(li); });
+  ckBody.appendChild(ol);
+  s.appendChild(ckCard);
+
+  const { card, body } = cardEl('<span class="card-title">Notas de operação</span>');
+  DATA.notes.forEach(([k,v]) => { const n = document.createElement('div'); n.className = 'note'; n.innerHTML = `<b>${k}:</b> ${v}`; body.appendChild(n); });
+  s.appendChild(card);
+
+  const { card: rtCard, body: rtBody } = cardEl('<span class="card-title">Rotina de operação</span>');
+  DATA.routine.forEach(([k,v]) => { const n = document.createElement('div'); n.className = 'note'; n.innerHTML = `<b>${k}:</b> ${v}`; rtBody.appendChild(n); });
+  s.appendChild(rtCard);
+
+  app.appendChild(s);
+}
+
+toc.innerHTML = tocItems.join('');
+
+/* Recolher/expandir todos os cards de uma vez */
+const toggleAllBtn = document.getElementById('toggle-all');
+const toggleAllLabel = document.getElementById('toggle-all-label');
+let allCollapsed = true;
+toggleAllBtn.addEventListener('click', () => {
+  allCollapsed = !allCollapsed;
+  document.querySelectorAll('.card').forEach(c => c.classList.toggle('collapsed', allCollapsed));
+  toggleAllLabel.textContent = allCollapsed ? 'Expandir tudo' : 'Recolher tudo';
+});
+
+/* ---------- exportar tudo como Markdown ---------- */
+function buildMarkdown() {
+  const h1 = document.querySelector('header h1').textContent.replace(/^A\s*/, '').trim();
+  const sub = document.querySelector('header .sub').textContent.trim();
+  const pills = [...document.querySelectorAll('header .pill')].map(p => '- **' + p.textContent.trim().replace(/:\s*/, ':** '));
+  let md = `# ${h1}\n\n_${sub}_\n\n${pills.join('\n')}\n\n**Nome da campanha:** \`${DATA.campaignName}\`\n\n`;
+
+  md += `## Configurações da campanha\n\n| Item | Valor |\n|---|---|\n`;
+  DATA.config.forEach(([k, v]) => { md += `| ${k} | ${v} |\n`; });
+  md += `\n**URL final (todos os grupos):** \`${DATA.url}\`\n\n`;
+  md += `**Locais-alvo:**\n` + DATA.geo.map(g => `- ${g}`).join('\n') + `\n\n> ${DATA.geoNote}\n\n`;
+
+  md += `## Conversões (GTM + Google Ads)\n\n**Container GTM padrão:** \`${DATA.conversion.containerPath}\`\n\n`;
+  DATA.conversion.actions.forEach(a => { md += `- **${a.name}** (${a.tipo} — ${a.meta}): ${a.trigger}\n`; });
+  md += `\n**Passo a passo:**\n` + DATA.conversion.steps.map((st, i) => `${i + 1}. ${st}`).join('\n') + `\n\n`;
+
+  md += `## Grupos de anúncios\n\n`;
+  DATA.groups.forEach(g => {
+    md += `### ${g.name}\n${g.sub}\n\n`;
+    md += `**Palavras-chave:**\n` + g.keywords.map(k => `- ${k}`).join('\n') + `\n\n`;
+    md += `**Títulos (15):**\n` + g.headlines.map((h, i) => `${i + 1}. ${h}`).join('\n') + `\n\n`;
+    md += `**Descrições (4):**\n` + g.descriptions.map((d, i) => `${i + 1}. ${d}`).join('\n') + `\n\n`;
+  });
+
+  md += `## Extensões\n\n**Sitelinks:**\n`;
+  DATA.sitelinks.forEach(s => { md += `- **${s.title}** — ${s.d1} / ${s.d2} → ${s.url}\n`; });
+  md += `\n**Frases de destaque (Callouts):**\n` + DATA.callouts.map(c => `- ${c}`).join('\n') + `\n\n`;
+  md += `**Snippets (Cabeçalho: ${DATA.snippetsHeader}):**\n` + DATA.snippets.map(s => `- ${s}`).join('\n') + `\n\n`;
+  md += `**Extensão de chamada:** ${DATA.call}\n\n`;
+  md += `**Extensão de preço:**\n` + DATA.prices.items.map(p => `- ${p.title} — ${p.price} — ${p.desc} → ${p.url}`).join('\n') + `\n\n`;
+
+  md += `## Palavras-chave negativas\n` + DATA.negatives.map(n => `- ${n}`).join('\n') + `\n\n`;
+
+  md += `## Checklist pré-lançamento\n` + DATA.checklist.map((c, i) => `${i + 1}. ${c}`).join('\n') + `\n\n`;
+  md += `## Notas de operação\n` + DATA.notes.map(([k, v]) => `- **${k}:** ${v}`).join('\n') + `\n\n`;
+  md += `## Rotina de operação\n` + DATA.routine.map(([k, v]) => `- **${k}:** ${v}`).join('\n') + `\n`;
+  return md;
+}
+document.getElementById('copy-md').addEventListener('click', () => copy(buildMarkdown(), 'Setup em Markdown'));
+</script>
+</body>
+</html>

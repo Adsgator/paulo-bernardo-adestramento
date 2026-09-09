@@ -1,0 +1,75 @@
+---
+// Página inicial — Paulo Bernardo | Adestrador de Cães
+// Estrutura: Header → Hero → Serviços → Diferenciais → Sobre → Treino em grupo
+//            → Avaliações → Parceiros → FAQ → Contato → Footer
+
+import Avaliacoes from "../components/sections/Avaliacoes.astro";
+import Contato from "../components/sections/Contato.astro";
+import Diferenciais from "../components/sections/Diferenciais.astro";
+import FAQ from "../components/sections/FAQ.astro";
+import Footer from "../components/sections/Footer.astro";
+import Header from "../components/sections/Header.astro";
+import Hero from "../components/sections/Hero.astro";
+import Parceiros from "../components/sections/Parceiros.astro";
+import Servicos from "../components/sections/Servicos.astro";
+import Sobre from "../components/sections/Sobre.astro";
+import TreinoEmGrupo from "../components/sections/TreinoEmGrupo.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout>
+  <Header />
+
+  <main id="main-content" tabindex="-1">
+    <Hero />
+    <Servicos />
+    <Diferenciais />
+    <Sobre />
+    <TreinoEmGrupo />
+    <Avaliacoes />
+    <Parceiros />
+    <FAQ />
+    <Contato />
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script is:inline>
+  // Origem paga — visita vinda de anúncio do Google (gclid/gbraid/wbraid) fica
+  // marcada na sessão pra ajustar a mensagem do WhatsApp no clique.
+  try {
+    var parametrosOrigem = new URLSearchParams(location.search);
+    if (parametrosOrigem.has("gclid") || parametrosOrigem.has("gbraid") || parametrosOrigem.has("wbraid") || parametrosOrigem.get("utm_medium") === "cpc") {
+      sessionStorage.setItem("origem-visita", "google-ads");
+    }
+  } catch (e) {}
+
+  // Rastreamento de cliques WhatsApp via dataLayer (GTM).
+  // Detecta pelo href (wa.me / api.whatsapp.com), não pelo data-tracking conter
+  // "whatsapp" — CTAs nomeados por seção (hero-cta, sobre-cta...) também são
+  // links de WhatsApp e ficariam de fora, zerando a conversão contato_wpp.
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest('a[href^="https://wa.me/"], a[href^="https://api.whatsapp.com/"]');
+    if (!el) return;
+
+    // Visita de anúncio: troca "Vi o/seu site" por "Vi o/seu anúncio no Google" na
+    // mensagem pré-preenchida — o cliente identifica na conversa que o lead veio da
+    // campanha. Se a LP usa outra frase, adapte a troca à frase real (URL-encoded).
+    // Feito no clique (não no load) pra cobrir links de islands hidratados.
+    try {
+      if (sessionStorage.getItem("origem-visita") === "google-ads") {
+        el.href = el.href
+          .replace("Vi%20o%20site", "Vi%20o%20an%C3%BAncio%20no%20Google")
+          .replace("Vi%20seu%20site", "Vi%20seu%20an%C3%BAncio%20no%20Google");
+      }
+    } catch (err) {}
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "contato_wpp",
+      click_action: el.getAttribute("data-tracking") || "unknown",
+      click_section: el.getAttribute("data-section") || "unknown",
+    });
+  });
+</script>
