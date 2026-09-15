@@ -34,8 +34,10 @@ Uma réplica **1:1 do design do Figma**
   `src/components/islands/ScrollAnimations.tsx` (`client:load` no BaseLayout).
 - **Lenis** — smooth scroll, integrado ao ScrollAnimations pelo padrão oficial
   da lib (`lenis.on("scroll", ScrollTrigger.update)` + `gsap.ticker.add(lenis.raf)`).
-- **framer-motion** — só no menu mobile (`MobileMenu.tsx`) e no banner de
-  cookies (`CookieBanner.tsx`).
+- **framer-motion** — só no banner de cookies (`CookieBanner.tsx`). O menu
+  mobile do Header **não** usa React/framer-motion: é vanilla JS (`<script>`
+  dentro do próprio `Header.astro`, toggle de classe `hidden` num painel
+  inline, sem overlay fullscreen nem portal).
 - **astro-icon** + `@iconify-json/lucide` estão instalados mas **não são usados**
   hoje: os poucos ícones do layout são SVG inline, e o do WhatsApp é o
   componente `WhatsAppIcon.astro`. Se for adicionar um ícone novo de UI,
@@ -109,8 +111,10 @@ import WhatsAppIcon from "../global/WhatsAppIcon.astro";
 ```
 
 - O ícone é **sempre** `WhatsAppIcon.astro`, nunca um `<svg>` colado. O path
-  vive em `src/data/whatsapp-icon.ts` (compartilhado com a island React, que
-  não importa `.astro`). Mudou o desenho? Só nesse arquivo.
+  vive em `src/data/whatsapp-icon.ts` (isolado num módulo `.ts` porque uma
+  island React já precisou dele no passado e não conseguia importar um
+  `.astro` — hoje só o `WhatsAppIcon.astro` o usa). Mudou o desenho? Só
+  nesse arquivo.
 - O texto vai em `<span class="whitespace-nowrap">` e o ícone leva
   `shrink-0` — sem isso o rótulo quebra em duas linhas em telas estreitas.
 - O botão **flutuante** já existe (`WhatsAppFloat.astro`) — não recrie.
@@ -179,8 +183,8 @@ alinhar a `#FFFF00`/`#000000` se for mexer ali.
 - Link ativo por seção via IntersectionObserver. **O `#hero-section` também é
   observado**: quando ele está na faixa, nenhum item de menu fica ativo —
   senão "Serviços" gruda ao voltar ao topo.
-- Menu mobile: overlay full-screen (`MobileMenu.tsx`), fecha ao clicar em link,
-  fora ou no Esc.
+- Menu mobile: painel inline dentro do próprio `Header.astro` (vanilla JS,
+  toggle de classe `hidden`), fecha ao clicar em link, fora ou no Esc.
 - Nenhum link de menu aponta para `#`.
 
 ### WhatsApp flutuante (`WhatsAppFloat.astro`)
@@ -215,6 +219,25 @@ alinhar a `#FFFF00`/`#000000` se for mexer ali.
   preenchidos (CNPJ 37.040.687/0001-07, e-mail ph_bernardo@yahoo.com.br,
   hospedagem Vercel, formulário FormSubmit). Sem `TODO` pendente.
 - `404.astro` é standalone (sem BaseLayout), com header/footer próprios.
+- O `<header>` fixo dessas três páginas (política, termos, 404) tem
+  `transform: translateZ(0)` na `<Image>`/`<img>` da logo. **Não remova**:
+  sem isso o Chrome deixa um artefato de rasterização (uma faixa amarela
+  fina) na base do SVG circular, visível só na composição final da página
+  (não aparece isolando o elemento nem inspecionando o DOM/CSS — é bug de
+  compositing do navegador com SVG dentro de `position:fixed`).
+
+### Árvore de links (`arvore-de-links.astro`)
+- Réplica 1:1 do Figma (nodes `52:49` desktop / `52:128` mobile). Página
+  standalone tipo Linktree — sem `BaseLayout`, sem Header/Footer/WhatsApp
+  flutuante/ScrollAnimations do site principal. Mesmo padrão do `404.astro`.
+- Slug mantido: `/arvore-de-links` (era a URL da página em produção).
+- Imagem de fundo: `src/assets/images/img-links-bg.webp` (cliente manda o
+  arquivo atualizado; copiar para essa pasta e trocar o import se mudar).
+- Foto de perfil: `src/assets/images/img-links-perfil.png`.
+- Links: WhatsApp (`PUBLIC_WA_NUMBER`/`PUBLIC_WA_MESSAGE` do `.env`),
+  Instagram (mesma URL do `Footer.astro`) e o site
+  (`PUBLIC_SITE_URL`). Ícones são SVG inline com `fill="currentColor"`
+  (mesmo padrão do `WhatsAppIcon.astro`), não `astro-icon`.
 
 ---
 
@@ -242,12 +265,14 @@ alinhar a `#FFFF00`/`#000000` se for mexer ali.
 src/
   components/
     global/   → SkipLink, WhatsAppFloat, WhatsAppIcon, GTM
-    islands/  → CookieBanner, MobileMenu, ScrollAnimations (React)
+    islands/  → CookieBanner, ScrollAnimations (React)
     sections/ → Header, Hero, Servicos, Diferenciais, Sobre, TreinoEmGrupo,
                 Avaliacoes, Parceiros, FAQ, Contato, Footer
   data/       → whatsapp-icon.ts (path SVG compartilhado Astro + React)
   layouts/    → BaseLayout.astro (head, SEO, GTM, Consent Mode, WhatsApp, cookies)
-  pages/      → index.astro (composição), 404, politica-de-privacidade, termos-de-uso
+  pages/      → index.astro (composição), 404, politica-de-privacidade,
+                termos-de-uso, arvore-de-links (standalone, tipo Linktree —
+                sem Header/Footer/WhatsApp flutuante do site principal)
   styles/     → tokens.css (edite aqui), global.css (@theme + utilitárias)
 public/
   video/      → treino-em-grupo.mp4 + poster

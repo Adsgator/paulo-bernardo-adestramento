@@ -1,0 +1,320 @@
+---
+// Árvore de links — página standalone tipo Linktree, sem Header/Footer do
+// site (réplica 1:1 do Figma: node 52:49 desktop, 52:128 mobile).
+// Mesmo padrão de 404.astro: HTML próprio, sem BaseLayout, sem GTM/Consent
+// duplicado (a página não faz parte do funil principal do site).
+import { Image } from "astro:assets";
+import bgImage from "../assets/images/img-links-bg.webp";
+import perfilImage from "../assets/images/img-links-perfil.png";
+import logo from "../assets/images/logo-paulo-bernardo.svg";
+
+const waNumber = import.meta.env.PUBLIC_WA_NUMBER || "SEUNUMERO";
+const waMessage =
+  import.meta.env.PUBLIC_WA_MESSAGE || "Olá! Vi seu site e gostaria de mais informações.";
+const WA_LINK = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+const INSTAGRAM = "https://www.instagram.com/paulobernardoadestrador";
+const SITE_URL = import.meta.env.PUBLIC_SITE_URL || "https://paulobernardoadestrador.com.br";
+---
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>@paulobernardoadestrador — Cão Belo Adestramento</title>
+  <meta
+    name="description"
+    content="Treinando com respeito e amor aos cães. Acesse o site ou fale pelo WhatsApp com Paulo Bernardo, adestrador em São José dos Campos."
+  />
+  <link rel="canonical" href={`${SITE_URL}/arvore-de-links`} />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <meta property="og:type" content="profile" />
+  <meta property="og:title" content="@paulobernardoadestrador — Cão Belo Adestramento" />
+  <meta
+    property="og:description"
+    content="Treinando com respeito e amor aos cães."
+  />
+  <meta property="og:url" content={`${SITE_URL}/arvore-de-links`} />
+
+  <style>
+    @import "@fontsource/nunito/500.css";
+    @import "@fontsource/nunito/600.css";
+    @import "../styles/tokens.css";
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: var(--t-font-sans);
+      -webkit-font-smoothing: antialiased;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+  </style>
+</head>
+<body>
+  <main class="links-page">
+    <div class="links-page__bg" aria-hidden="true">
+      <Image src={bgImage} alt="" class="links-page__bg-img" width={1920} height={1200} />
+      <div class="links-page__bg-overlay"></div>
+    </div>
+
+    <div class="links-card">
+      <Image
+        src={perfilImage}
+        alt="Paulo Bernardo, adestrador de cães"
+        class="links-card__avatar"
+        width={90}
+        height={90}
+      />
+
+      <p class="links-card__handle">@paulobernardoadestrador</p>
+
+      <div class="links-card__socials">
+        <a
+          href={WA_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="links-card__social-btn"
+          aria-label="Falar no WhatsApp"
+          data-tracking="whatsapp-arvore-de-links"
+        >
+          <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="links-card__social-icon">
+            <path
+              d="M16.1289 3.79297C14.4922 2.15234 12.3125 1.25 9.99609 1.25C5.21484 1.25 1.32422 5.14062 1.32422 9.92188C1.32422 11.4492 1.72266 12.9414 2.48047 14.2578L1.25 18.75L5.84766 17.543C7.11328 18.2344 8.53906 18.5977 9.99219 18.5977H9.99609C14.7734 18.5977 18.75 14.707 18.75 9.92578C18.75 7.60938 17.7656 5.43359 16.1289 3.79297ZM9.99609 17.1367C8.69922 17.1367 7.42969 16.7891 6.32422 16.1328L6.0625 15.9766L3.33594 16.6914L4.0625 14.0313L3.89062 13.7578C3.16797 12.6094 2.78906 11.2852 2.78906 9.92188C2.78906 5.94922 6.02344 2.71484 10 2.71484C11.9258 2.71484 13.7344 3.46484 15.0937 4.82812C16.4531 6.19141 17.2891 8 17.2852 9.92578C17.2852 13.9023 13.9687 17.1367 9.99609 17.1367ZM13.9492 11.7383C13.7344 11.6289 12.668 11.1055 12.4688 11.0352C12.2695 10.9609 12.125 10.9258 11.9805 11.1445C11.8359 11.3633 11.4219 11.8477 11.293 11.9961C11.168 12.1406 11.0391 12.1602 10.8242 12.0508C9.55078 11.4141 8.71484 10.9141 7.875 9.47266C7.65234 9.08984 8.09766 9.11719 8.51172 8.28906C8.58203 8.14453 8.54687 8.01953 8.49219 7.91016C8.4375 7.80078 8.00391 6.73438 7.82422 6.30078C7.64844 5.87891 7.46875 5.9375 7.33594 5.92969C7.21094 5.92188 7.06641 5.92188 6.92187 5.92188C6.77734 5.92188 6.54297 5.97656 6.34375 6.19141C6.14453 6.41016 5.58594 6.93359 5.58594 8C5.58594 9.06641 6.36328 10.0977 6.46875 10.2422C6.57813 10.3867 7.99609 12.5742 10.1719 13.5156C11.5469 14.1094 12.0859 14.1602 12.7734 14.0586C13.1914 13.9961 14.0547 13.5352 14.2344 13.0273C14.4141 12.5195 14.4141 12.0859 14.3594 11.9961C14.3086 11.8984 14.1641 11.8438 13.9492 11.7383Z"
+            ></path>
+          </svg>
+        </a>
+        <a
+          href={INSTAGRAM}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="links-card__social-btn"
+          aria-label="Seguir no Instagram"
+          data-tracking="instagram-arvore-de-links"
+        >
+          <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="links-card__social-icon">
+            <path
+              d="M10.0039 5.50781C7.51953 5.50781 5.51562 7.51172 5.51562 9.99609C5.51562 12.4805 7.51953 14.4844 10.0039 14.4844C12.4883 14.4844 14.4922 12.4805 14.4922 9.99609C14.4922 7.51172 12.4883 5.50781 10.0039 5.50781ZM10.0039 12.9141C8.39844 12.9141 7.08594 11.6055 7.08594 9.99609C7.08594 8.38672 8.39453 7.07812 10.0039 7.07812C11.6133 7.07812 12.9219 8.38672 12.9219 9.99609C12.9219 11.6055 11.6094 12.9141 10.0039 12.9141ZM15.7227 5.32422C15.7227 5.90625 15.2539 6.37109 14.6758 6.37109C14.0938 6.37109 13.6289 5.90234 13.6289 5.32422C13.6289 4.74609 14.0977 4.27734 14.6758 4.27734C15.2539 4.27734 15.7227 4.74609 15.7227 5.32422ZM18.6953 6.38672C18.6289 4.98438 18.3086 3.74219 17.2813 2.71875C16.2578 1.69531 15.0156 1.375 13.6133 1.30469C12.168 1.22266 7.83594 1.22266 6.39063 1.30469C4.99219 1.37109 3.75 1.69141 2.72266 2.71484C1.69531 3.73828 1.37891 4.98047 1.30859 6.38281C1.22656 7.82812 1.22656 12.1602 1.30859 13.6055C1.375 15.0078 1.69531 16.25 2.72266 17.2734C3.75 18.2969 4.98828 18.6172 6.39063 18.6875C7.83594 18.7695 12.168 18.7695 13.6133 18.6875C15.0156 18.6211 16.2578 18.3008 17.2813 17.2734C18.3047 16.25 18.625 15.0078 18.6953 13.6055C18.7773 12.1602 18.7773 7.83203 18.6953 6.38672ZM16.8281 15.1562C16.5234 15.9219 15.9336 16.5117 15.1641 16.8203C14.0117 17.2773 11.2773 17.1719 10.0039 17.1719C8.73047 17.1719 5.99219 17.2734 4.84375 16.8203C4.07812 16.5156 3.48828 15.9258 3.17969 15.1562C2.72266 14.0039 2.82813 11.2695 2.82813 9.99609C2.82813 8.72266 2.72656 5.98437 3.17969 4.83594C3.48438 4.07031 4.07422 3.48047 4.84375 3.17187C5.99609 2.71484 8.73047 2.82031 10.0039 2.82031C11.2773 2.82031 14.0156 2.71875 15.1641 3.17187C15.9297 3.47656 16.5195 4.06641 16.8281 4.83594C17.2852 5.98828 17.1797 8.72266 17.1797 9.99609C17.1797 11.2695 17.2852 14.0078 16.8281 15.1562Z"
+            ></path>
+          </svg>
+        </a>
+      </div>
+
+      <div class="links-card__divider" role="separator"></div>
+
+      <a
+        href={SITE_URL}
+        class="links-card__link"
+        data-tracking="site-arvore-de-links"
+      >
+        <svg viewBox="0 0 25 25" fill="currentColor" aria-hidden="true" class="links-card__link-icon">
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M11.3281 0.838248C8.72503 1.08341 6.12308 2.32175 4.22015 4.22111C-0.369401 8.80201 -0.354704 16.2365 4.25291 20.8084C5.58568 22.1309 7.07361 23.0382 8.8867 23.6339C13.7861 25.2435 19.1734 23.4254 22.1294 19.1651C24.1969 16.1849 24.7663 12.3684 23.6555 8.93556C23.305 7.85246 22.9129 7.03346 22.2879 6.07911C19.8926 2.42204 15.7163 0.424918 11.3281 0.838248ZM12.1472 2.41007C11.1898 2.76716 10.227 4.46945 9.62781 6.86476C9.43812 7.62317 9.2932 8.38302 9.33148 8.41882C9.40975 8.49201 11.0117 8.56686 12.5 8.56686C13.9882 8.56686 15.5902 8.49201 15.6685 8.41882C15.7068 8.38302 15.5618 7.62317 15.3722 6.86476C14.82 4.65725 13.9616 3.03957 13.0632 2.51305C12.7987 2.35808 12.4052 2.31383 12.1472 2.41007ZM9.03318 2.95636C7.05608 3.67351 5.29349 5.05075 4.08016 6.82652C3.93314 7.04167 3.85706 7.19611 3.88494 7.22272C4.07312 7.40226 7.63104 8.30324 7.73626 8.19802C7.74876 8.18546 7.82669 7.83049 7.90936 7.4092C8.07753 6.55241 8.35487 5.53166 8.60907 4.83399C8.78904 4.34 9.1346 3.53698 9.24506 3.35621C9.44417 3.03019 9.56985 2.78351 9.53573 2.78567C9.51444 2.78698 9.28831 2.86383 9.03318 2.95636ZM15.5541 3.01033C15.6278 3.14055 15.7182 3.29621 15.7549 3.35621C15.8654 3.53698 16.2109 4.34 16.3908 4.83399C16.6451 5.53166 16.9225 6.55241 17.0907 7.4092C17.1732 7.83049 17.2507 8.18507 17.2629 8.19713C17.3722 8.30641 20.9163 7.40944 21.1151 7.22219C21.2115 7.13121 20.3328 5.97975 19.6472 5.2987C18.4963 4.15558 17.0087 3.25475 15.5346 2.80827L15.4198 2.77355L15.5541 3.01033ZM2.86497 9.31574C2.30379 11.0273 2.20033 12.7079 2.54578 14.5002C2.6474 15.0274 3.05892 16.3574 3.1204 16.3574C3.13948 16.3574 3.51635 16.2385 3.9579 16.0929C4.85686 15.7966 5.83562 15.5473 6.87327 15.3506L7.56976 15.2185L7.54436 15.0678C7.49266 14.761 7.42229 13.2808 7.42229 12.5C7.42229 11.7193 7.49266 10.239 7.54436 9.93234L7.56976 9.78161L6.87327 9.64948C5.83562 9.45265 4.85686 9.20343 3.9579 8.90719C3.51635 8.76164 3.13948 8.64259 3.1204 8.64259C3.1013 8.64259 2.98636 8.94552 2.86497 9.31574ZM21.2158 8.84636C20.4348 9.12404 19.4423 9.38658 18.3712 9.59885L17.4308 9.78518L17.4562 9.9341C17.5052 10.221 17.5772 11.7503 17.5772 12.5C17.5772 13.2522 17.505 14.7796 17.4559 15.0678L17.4302 15.2185L18.1266 15.3506C19.1643 15.5473 20.143 15.7966 21.042 16.0929C21.4836 16.2385 21.8601 16.3574 21.8786 16.3574C21.8972 16.3574 22.0043 16.0811 22.1166 15.7432C22.826 13.6098 22.8322 11.4422 22.1351 9.31574C21.9655 8.79893 21.8956 8.64405 21.8336 8.64899C21.7892 8.6525 21.5112 8.74127 21.2158 8.84636ZM9.10213 10.0329C9.05922 10.1574 8.98436 11.7253 8.98436 12.5C8.98436 13.2747 9.05922 14.8426 9.10213 14.9672C9.11376 15.0009 9.35677 14.9947 9.84534 14.9485C10.8349 14.8547 14.1651 14.8547 15.1546 14.9485C15.6433 14.9947 15.8862 15.0009 15.8982 14.9672C15.9389 14.851 16.0152 13.2441 16.0152 12.5C16.0152 11.7559 15.9389 10.149 15.8982 10.0329C15.8862 9.99919 15.6433 10.0053 15.1546 10.0516C14.1651 10.1453 10.8349 10.1453 9.84534 10.0516C9.35677 10.0053 9.11376 9.99919 9.10213 10.0329ZM10.7178 16.4527C9.46991 16.5349 9.32615 16.5553 9.32615 16.6501C9.32615 16.8139 9.47806 17.5531 9.65238 18.2373C10.1995 20.3854 11.0542 21.9686 11.9513 22.4959C12.2804 22.6894 12.7196 22.6894 13.0487 22.4959C13.9633 21.9583 14.8161 20.3577 15.3722 18.1352C15.5621 17.3757 15.7067 16.6178 15.6685 16.5803C15.5596 16.4734 11.8537 16.3778 10.7178 16.4527ZM6.82976 16.9419C5.74534 17.1689 4.00716 17.6623 3.88494 17.7778C3.85716 17.804 3.93373 17.9592 4.08016 18.1735C5.09285 19.6556 6.46004 20.8438 8.0322 21.6078C8.58944 21.8786 9.51342 22.2432 9.54774 22.2058C9.55442 22.1984 9.47191 22.0386 9.36433 21.8506C8.77664 20.8237 8.23031 19.226 7.9117 17.6025C7.83025 17.1877 7.76365 16.8368 7.76365 16.8226C7.76365 16.7698 7.47605 16.8065 6.82976 16.9419ZM17.2362 16.8226C17.2362 16.8368 17.1686 17.1929 17.0859 17.6141C16.7584 19.283 16.1318 21.0584 15.5155 22.0638L15.4146 22.2281L15.5321 22.1926C17.0136 21.7433 18.4825 20.8537 19.6435 19.7024C20.3367 19.0149 21.2124 17.8697 21.1151 17.7778C21.0899 17.7541 20.7947 17.6462 20.459 17.538C19.2559 17.15 17.2362 16.7016 17.2362 16.8226Z"
+          ></path>
+        </svg>
+        <span>Visite meu site</span>
+      </a>
+
+      <a
+        href={WA_LINK}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="links-card__link"
+        data-tracking="whatsapp-link-arvore-de-links"
+      >
+        <svg viewBox="0 0 25 25" fill="currentColor" aria-hidden="true" class="links-card__link-icon">
+          <path
+            d="M20.1611 4.74121C18.1152 2.69043 15.3906 1.5625 12.4951 1.5625C6.51855 1.5625 1.65527 6.42578 1.65527 12.4023C1.65527 14.3115 2.15332 16.1768 3.10059 17.8223L1.5625 23.4375L7.30957 21.9287C8.8916 22.793 10.6738 23.2471 12.4902 23.2471H12.4951C18.4668 23.2471 23.4375 18.3838 23.4375 12.4072C23.4375 9.51172 22.207 6.79199 20.1611 4.74121ZM12.4951 21.4209C10.874 21.4209 9.28711 20.9863 7.90527 20.166L7.57812 19.9707L4.16992 20.8643L5.07812 17.5391L4.86328 17.1973C3.95996 15.7617 3.48633 14.1064 3.48633 12.4023C3.48633 7.43652 7.5293 3.39355 12.5 3.39355C14.9072 3.39355 17.168 4.33105 18.8672 6.03516C20.5664 7.73926 21.6113 10 21.6064 12.4072C21.6064 17.3779 17.4609 21.4209 12.4951 21.4209ZM17.4365 14.6729C17.168 14.5361 15.835 13.8818 15.5859 13.7939C15.3369 13.7012 15.1563 13.6572 14.9756 13.9307C14.7949 14.2041 14.2773 14.8096 14.1162 14.9951C13.96 15.1758 13.7988 15.2002 13.5303 15.0635C11.9385 14.2676 10.8936 13.6426 9.84375 11.8408C9.56543 11.3623 10.1221 11.3965 10.6396 10.3613C10.7275 10.1807 10.6836 10.0244 10.6152 9.8877C10.5469 9.75098 10.0049 8.41797 9.78027 7.87598C9.60449 7.34863 9.42481 7.34863 9.29199 7.34277C9.16797 7.33301 9.02344 7.33301 8.87891 7.33301C8.69824 7.33301 8.40527 7.40137 8.15625 7.66992C7.90723 7.93848 7.20898 8.5918 7.20898 9.92578C7.20898 11.2598 8.18066 12.5488 8.3125 12.7295C8.44922 12.9102 10.2217 15.6445 12.9414 16.8213C14.6602 17.5635 15.334 17.627 16.1934 17.5C16.7158 17.4219 17.7949 16.8457 18.0195 16.2109C18.2441 15.5762 18.2441 15.0342 18.1758 14.9219C18.1123 14.7998 17.9316 14.7314 17.6631 14.5947L17.4365 14.6729Z"
+          ></path>
+        </svg>
+        <span>Fale pelo WhatsApp</span>
+      </a>
+
+      <p class="links-card__tagline">Treinando com respeito e amor aos cães.</p>
+    </div>
+
+    <Image src={logo} alt="Cão Belo Adestramento" class="links-page__logo" width={70} height={70} />
+  </main>
+
+  <style>
+    .links-page {
+      position: relative;
+      display: flex;
+      min-height: 100vh;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 80px 20px;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .links-page__bg {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+    }
+    .links-page__bg-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+    .links-page__bg-overlay {
+      position: absolute;
+      inset: 0;
+      background: color-mix(in srgb, var(--t-footer) 90%, transparent);
+    }
+
+    .links-card {
+      display: flex;
+      width: 100%;
+      max-width: 455px;
+      min-height: 335px;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      border: 1px solid var(--t-secondary);
+      border-radius: 20px;
+      background: color-mix(in srgb, var(--t-footer) 30%, transparent);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      padding: 40px 20px;
+    }
+    @media (min-width: 480px) {
+      .links-card {
+        padding: 60px;
+      }
+    }
+
+    .links-card__avatar {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .links-card__handle {
+      font-family: var(--t-font-sans);
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .links-card__socials {
+      display: flex;
+      gap: 8px;
+    }
+    .links-card__social-btn {
+      display: flex;
+      width: 40px;
+      height: 40px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      background: var(--t-secondary);
+      color: var(--t-footer);
+    }
+    .links-card__social-btn:hover {
+      filter: brightness(0.95);
+    }
+    .links-card__social-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    .links-card__divider {
+      width: 100%;
+      border-top: 1px solid var(--t-secondary);
+    }
+
+    .links-card__link {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      border-radius: 10px;
+      background: linear-gradient(
+        to right,
+        var(--t-secondary),
+        color-mix(in srgb, var(--t-complement) 19%, transparent)
+      );
+      padding: 20px 30px;
+      color: var(--t-footer);
+      font-family: var(--t-font-sans);
+      font-size: 17.6px;
+      font-weight: 500;
+      text-align: center;
+    }
+    @media (min-width: 480px) {
+      .links-card__link {
+        font-size: 19.2px;
+      }
+    }
+    .links-card__link:hover {
+      filter: brightness(0.97);
+    }
+    .links-card__link-icon {
+      width: 25px;
+      height: 25px;
+      flex-shrink: 0;
+    }
+    .links-card__link span {
+      white-space: nowrap;
+    }
+
+    .links-card__tagline {
+      padding-top: 20px;
+      max-width: 290px;
+      font-family: var(--t-font-sans);
+      font-size: 17.6px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      line-height: 22.4px;
+      color: #ffffff;
+      text-align: center;
+    }
+    @media (min-width: 480px) {
+      .links-card__tagline {
+        font-size: 19.2px;
+      }
+    }
+
+    .links-page__logo {
+      width: 70px;
+      height: 70px;
+      opacity: 0.6;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--t-secondary);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .links-card__social-btn,
+      .links-card__link {
+        transition:
+          filter 0.2s ease,
+          transform 0.2s ease;
+      }
+    }
+  </style>
+</body>
+</html>

@@ -40,7 +40,7 @@ const DOMINIO = SITE_URL.replace(/^https?:\/\//, "");
       background: var(--t-surface);
       color: var(--t-text-main);
       -webkit-font-smoothing: antialiased;
-      padding-top: 88px;
+      padding-top: 100px;
     }
 
     /* ── Header ──────────────────────────────────── */
@@ -77,9 +77,13 @@ const DOMINIO = SITE_URL.replace(/^https?:\/\//, "");
     }
 
     header .logo img {
-      height: 40px;
+      height: 52px;
       width: auto;
       display: block;
+      /* Isola a camada de composição: sem isso, o Chrome deixa um artefato
+         de rasterização (uma faixa amarela) na base do SVG por causa do
+         header em position:fixed. */
+      transform: translateZ(0);
     }
 
     header .back {
@@ -167,9 +171,9 @@ const DOMINIO = SITE_URL.replace(/^https?:\/\//, "");
 
     /* ── Responsive ──────────────────────────────── */
     @media (max-width: 640px) {
-      body { padding-top: 72px; }
+      body { padding-top: 80px; }
       .header-content { padding: 10px 16px; }
-      header .logo img { height: 32px; }
+      header .logo img { height: 40px; }
       h1 { font-size: 1.9rem; }
       h2 { font-size: 1.2rem; }
       p, li { font-size: 15px; }
@@ -185,7 +189,7 @@ const DOMINIO = SITE_URL.replace(/^https?:\/\//, "");
   <header>
     <div class="header-content">
       <a href="/" aria-label="Ir para o início" class="logo">
-        <Image src={logoImg} alt="Cão Belo Adestramento" width={40} height={40} loading="eager" />
+        <Image src={logoImg} alt="Cão Belo Adestramento" width={118} height={118} loading="eager" />
       </a>
       <a href="/" class="back">← Voltar</a>
     </div>

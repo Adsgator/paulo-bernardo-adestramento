@@ -38,7 +38,7 @@ const DOMINIO = SITE_URL.replace(/^https?:\/\//, "");
       background: var(--t-surface);
       color: var(--t-text-main);
       -webkit-font-smoothing: antialiased;
-      padding-top: 88px;
+      padding-top: 100px;
     }
 
     header {
@@ -62,7 +62,15 @@ const DOMINIO = SITE_URL.replace(/^https?:\/\//, "");
     }
     header .logo { display: flex; align-items: center; text-decoration: none; }
     header .logo:focus-visible { outline: 2px solid var(--t-primary); outline-offset: 4px; }
-    header .logo img { height: 40px; width: auto; display: block; }
+    header .logo img {
+      height: 52px;
+      width: auto;
+      display: block;
+      /* Isola a camada de composição: sem isso, o Chrome deixa um artefato
+         de rasterização (uma faixa amarela) na base do SVG por causa do
+         header em position:fixed. */
+      transform: translateZ(0);
+    }
     header .back {
       font-size: 0.85rem;
       color: var(--t-text-soft);
@@ -127,9 +135,9 @@ const DOMINIO = SITE_URL.replace(/^https?:\/\//, "");
     }
 
     @media (max-width: 640px) {
-      body { padding-top: 72px; }
+      body { padding-top: 80px; }
       .header-content { padding: 10px 16px; }
-      header .logo img { height: 32px; }
+      header .logo img { height: 40px; }
       h1 { font-size: 1.9rem; }
       h2 { font-size: 1.2rem; }
       p, li { font-size: 15px; }

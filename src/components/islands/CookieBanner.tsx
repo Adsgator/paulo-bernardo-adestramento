@@ -57,7 +57,7 @@ export default function CookieBanner() {
         role="dialog"
         aria-label="Aviso de cookies"
         aria-live="polite"
-        className="fixed bottom-6 left-4 right-4 md:left-6 md:right-auto md:max-w-sm z-[200] bg-dark text-white rounded p-5 shadow-float"
+        className="fixed bottom-6 left-4 right-4 md:left-6 md:right-auto md:max-w-sm z-[200] bg-dark text-white rounded-xl p-5 shadow-float border border-secondary/40"
         initial={{ opacity: 0, y: prefersReduced ? 0 : 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: prefersReduced ? 0 : 20 }}
@@ -71,21 +71,21 @@ export default function CookieBanner() {
           <button
             type="button"
             onClick={handleAccept}
-            className="flex-1 bg-primary text-white font-sans text-sm font-medium py-2.5 rounded-sm hover:bg-primary-dark transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            className="flex-1 bg-secondary text-primary font-sans text-sm font-semibold py-2.5 rounded-md hover:brightness-95 transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
           >
             Aceitar
           </button>
           <button
             type="button"
             onClick={handleReject}
-            className="flex-1 border border-white/20 text-white/60 font-sans text-sm py-2.5 rounded-sm hover:text-white hover:border-white/40 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            className="flex-1 border border-secondary/40 text-white/70 font-sans text-sm py-2.5 rounded-md hover:text-white hover:border-secondary/70 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
           >
             Recusar
           </button>
         </div>
         <a
           href="/politica-de-privacidade"
-          className="block mt-3 font-sans text-xs text-white/30 hover:text-white/50 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          className="block mt-3 font-sans text-xs text-white/40 hover:text-secondary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
         >
           Política de privacidade
         </a>
